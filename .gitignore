@@ -1,0 +1,6 @@
+face/models
+face/videos
+face/deploy/
+*.mp4
+*.avi
+motion/models
