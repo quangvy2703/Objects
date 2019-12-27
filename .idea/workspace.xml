@@ -2,222 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b802d4e9-ffde-4a0a-bf33-e2eb713eef7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/emotion/emotions.py" beforeDir="false" afterPath="$PROJECT_DIR$/emotion/emotions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/3rdparty/operator/amsoftmax-inl.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/3rdparty/operator/amsoftmax.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/3rdparty/operator/amsoftmax.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/3rdparty/operator/lsoftmax-inl.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/3rdparty/operator/lsoftmax.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/3rdparty/operator/lsoftmax.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/Evaluation/IJB/IJBB_Evaluation_MS1MV2.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/Evaluation/IJB/IJBB_Evaluation_VGG2.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/Evaluation/IJB/IJBC_Evaluation_MS1MV2.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/Evaluation/IJB/IJBC_Evaluation_VGG2.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/Evaluation/IJB/readme.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/Evaluation/Megaface/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/Evaluation/Megaface/gen_megaface.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/Evaluation/Megaface/remove_noises.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/Evaluation/Megaface/run.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/PY_OP/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/PY_OP/rpn_fpn_ohem3.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/config.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/core/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/core/callback.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/core/loader.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/core/metric.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/core/module.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/core/module_bak.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/core/tester.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/cython/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/cython/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/cython/anchors.pyx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/cython/bbox.pyx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/cython/cpu_nms.pyx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/cython/gpu_nms.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/cython/gpu_nms.pyx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/cython/nms_kernel.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/cython/setup.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/dataset/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/dataset/ds_utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/dataset/imdb.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/dataset/retinaface.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/io/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/io/image.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/io/rcnn.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/io/rpn.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/logger.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/processing/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/processing/assign_levels.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/processing/bbox_regression.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/processing/bbox_transform.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/processing/generate_anchor.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/processing/nms.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/pycocotools/UPSTREAM_REV" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/pycocotools/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/pycocotools/_mask.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/pycocotools/_mask.pyx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/pycocotools/coco.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/pycocotools/cocoeval.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/pycocotools/mask.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/pycocotools/maskApi.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/pycocotools/maskApi.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/pycocotools/setup.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/sample_config.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/symbol/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/symbol/pyramidbox.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/symbol/symbol_common.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/symbol/symbol_common.py.bak" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/symbol/symbol_mnet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/symbol/symbol_mnet.py.bak" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/symbol/symbol_resnet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/symbol/symbol_ssh.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/tools/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/tools/demo_images.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/tools/demo_single_image.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/tools/reeval.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/tools/test_rcnn.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/tools/test_rpn.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/tools/train_maskrcnn.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/tools/train_rcnn.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/tools/train_rpn.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/utils/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/utils/combine_model.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/utils/load_data.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/utils/load_model.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/rcnn/utils/save_model.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/retinaface.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/test_widerface.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/RetinaFace/train.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/alignment/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/alignment/data.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/alignment/img_helper.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/alignment/metric.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/alignment/optimizer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/alignment/sample_config.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/alignment/symbol/sym_heatmap.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/alignment/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/alignment/test_rec_nme.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/alignment/train.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/common/face_align.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/common/flops_counter.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/cpp-align/FacePreprocess.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/datasets/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/benchmark.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/face_embedding.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/face_model.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/final.py" beforeDir="false" afterPath="$PROJECT_DIR$/face/deploy/final.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/final_cam_version.py" beforeDir="false" afterPath="$PROJECT_DIR$/face/deploy/final_cam_version.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/final_cam_version_lite.py" beforeDir="false" afterPath="$PROJECT_DIR$/face/deploy/final_cam_version_lite.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/ga_merge.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/generate_face.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/light-weight-image-features.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/model_slim.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det1-0001.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det1-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det1.caffemodel" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det1.prototxt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det2-0001.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det2-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det2.caffemodel" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det2.prototxt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det3-0001.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det3-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det3.caffemodel" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det3.prototxt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det4-0001.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det4-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det4.caffemodel" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn-model/det4.prototxt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/mtcnn_detector.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/register_face.py" beforeDir="false" afterPath="$PROJECT_DIR$/face/deploy/register_face.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/results.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/deploy/retinaface.py" beforeDir="false" afterPath="$PROJECT_DIR$/face/deploy/retinaface.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/Tom_Hanks_54745.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/add_age_rec.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/data.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/face_model.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/fmobilenet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/fresnet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/helper.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/model/model-0000.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/model/model-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det1-0001.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det1-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det1.caffemodel" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det1.prototxt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det2-0001.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det2-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det2.caffemodel" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det2.prototxt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det3-0001.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det3-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det3.caffemodel" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det3.prototxt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det4-0001.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det4-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det4.caffemodel" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn-model/det4.prototxt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/mtcnn_detector.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/symbol_utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gender-age/train.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gluon/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gluon/age_iter.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gluon/blocks/UDD.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gluon/blocks/embedding.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gluon/blocks/fresnet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gluon/image_iter.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gluon/train.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/gluon/verification.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/iccv19-challenge/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/iccv19-challenge/gen_image_feature.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/iccv19-challenge/gen_video_feature.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/data/build_eval_pack.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/data/lfw/pairs_label.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/data/rec2image.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/eval/lfw.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/eval/verification.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/image_iter.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/metric.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/parall_module_local_v1.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/sample_config.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/symbol/fdensenet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/symbol/fmnasnet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/symbol/fmobilefacenet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/symbol/fmobilenet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/symbol/fresnet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/symbol/memonger.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/symbol/symbol_utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/train.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/train_parall.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/recognition/triplet_image_iter.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/resources/11513D05.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/resources/arcface.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/resources/facerecognitionfromvideo.PNG" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/resources/lfr19_wechat1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/resources/mainsteps.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/resources/memoryspeed.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/resources/retina_R50_ex1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/resources/retina_R50_ex2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/resources/widerfacevaltest.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/sample_images/EW-2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/sample_images/cropped_faces_out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/sample_images/known/face_6.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/sample_images/t1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/sample_images/t2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Objects.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Objects.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/face" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1VV5GKOfdBXm972twOhGxpVFCb4" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -229,6 +32,35 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Objects" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="--input_video videos/video.mp4 --output_video videos/results/video.mp4 --emb_size 512 --use_face_detection True --use_ga_prediction True --use_emotion_prediction True" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">
@@ -254,5 +86,70 @@
       <updated>1577325324144</updated>
     </task>
     <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="418" y="210" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1577440232872">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="418" y="210" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1577440232872" />
+    <state x="743" y="310" width="424" height="484" key="FileChooserDialogImpl" timestamp="1577440097683">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="743" y="310" width="424" height="484" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1577440097683" />
+    <state width="1897" height="344" key="GridCell.Tab.0.bottom" timestamp="1577440233185">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1897" height="344" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1577440233185" />
+    <state width="1897" height="344" key="GridCell.Tab.0.center" timestamp="1577440233185">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1897" height="344" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1577440233185" />
+    <state width="1897" height="344" key="GridCell.Tab.0.left" timestamp="1577440233185">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1897" height="344" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1577440233185" />
+    <state width="1897" height="344" key="GridCell.Tab.0.right" timestamp="1577440233185">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1897" height="344" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1577440233185" />
+    <state width="1897" height="344" key="GridCell.Tab.1.bottom" timestamp="1577440233482">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1897" height="344" key="GridCell.Tab.1.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1577440233482" />
+    <state width="1897" height="344" key="GridCell.Tab.1.center" timestamp="1577440233482">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1897" height="344" key="GridCell.Tab.1.center/0.27.1920.1053@0.27.1920.1053" timestamp="1577440233482" />
+    <state width="1897" height="344" key="GridCell.Tab.1.left" timestamp="1577440233482">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1897" height="344" key="GridCell.Tab.1.left/0.27.1920.1053@0.27.1920.1053" timestamp="1577440233482" />
+    <state width="1897" height="344" key="GridCell.Tab.1.right" timestamp="1577440233482">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1897" height="344" key="GridCell.Tab.1.right/0.27.1920.1053@0.27.1920.1053" timestamp="1577440233482" />
+    <state x="449" y="187" key="SettingsEditor" timestamp="1577440115881">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="449" y="187" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1577440115881" />
+    <state x="616" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1577439794451">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="616" y="380" key="com.intellij.ide.util.TipDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1577439794451" />
+    <state x="623" y="257" width="672" height="678" key="search.everywhere.popup" timestamp="1577440044629">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="623" y="257" width="672" height="678" key="search.everywhere.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1577440044629" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>600</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
