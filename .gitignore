@@ -6,4 +6,6 @@ face/deploy/
 motion/models
 models
 *.jpg
-
+datasets/
+checkpoints/
+videos/

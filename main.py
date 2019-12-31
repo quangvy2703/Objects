@@ -13,8 +13,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'face', 'deploy'))
 import config
 from retinaface import RetinaFace
 
-
-
 sys.path.append(os.path.join(os.path.dirname(__file__), 'face', 'src', 'common'))
 import face_preprocess
 
@@ -26,12 +24,18 @@ from utils.preprocessor import preprocess_input
 
 import tensorflow as tf
 from tensorflow.compat.v1.keras.backend import set_session
+
 _config = tf.compat.v1.ConfigProto()
 _config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
 _config.log_device_placement = True  # to log device placement (on which device the operation ran)
 sess = tf.compat.v1.Session(config=_config)
 set_session(sess)
 
+# Face features extraction
+sys.path.append(os.path.join(os.path.dirname(__file__), 'face', 'deploy'))
+from trainer import FaceRecognition, Net
+import torch
+from torch.autograd import Variable
 ###Object detection
 from imageai.Detection import ObjectDetection
 
@@ -110,7 +114,7 @@ parser.add_argument('--emotion_model', type=str, default="models/emotion_model.h
 
 # Face features
 parser.add_argument('--use_face_recognition', type=bool, default=False, help="Using face recognition?")
-parser.add_argument('--batch_size', type=int, default=32)
+# parser.add_argument('--batch_size', type=int, default=32)
 parser.add_argument('--emb_size', type=int, default=512, help="Embedding size of face features")
 parser.add_argument('--face_feature_model', type=str, default='models/model-r100-ii/model, 0',
                     help="Path to face features extraction model")
@@ -119,6 +123,14 @@ parser.add_argument('--face_feature_model', type=str, default='models/model-r100
 parser.add_argument('--use_objects_detection', type=bool, default=False, help="Using object detection?")
 parser.add_argument('--object_detection_model', default='models/resnet50_coco_best_v2.0.1.h5',
                     help='Path to objects detection model')
+
+# Face recognition
+parser.add_argument('--batch_size', type=int, default=32, help="Batch size")
+parser.add_argument('--epochs', type=int, default=300, help="Epochs")
+# parser.add_argument('--emb_size', type=int, default=512, help="Embedding size")
+parser.add_argument('--train_dir', type=str, default="datasets/train/features")
+parser.add_argument('--test_dir', type=str, default="datasets/val/features")
+parser.add_argument('--n_classes', type=int, default=3, help="Number of peoples")
 
 # Scenes change
 parser.add_argument('--use_scenes_change_count', type=bool, default=False, help="Using scenes change count")
@@ -208,35 +220,6 @@ class FaceFeature:
         for idx in range(data.shape[0]):
             data[idx, :, :] = np.fliplr(data[idx, :, :])
 
-    def increase_brightness(self, img, threshold=170):
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        brightness = np.mean(gray)
-        value = 1.1 if brightness < threshold else 0.1
-
-        count = 0
-        while (True):
-            count += 1
-            hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-            vValue = hsv[..., 2]
-
-            hsv[..., 2] = np.where(vValue * value > 255, 255, vValue * value)
-            img = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
-
-            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            print(np.mean(gray))
-            if np.mean(gray) > threshold and value == 1.1:
-                break
-            if np.mean(gray) < threshold and value == 0.1:
-                break
-            # if count == 20:
-            #     break
-        return img
-
-    def get_gray_image(self, img):
-        _img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        backtorgb = cv2.cvtColor(_img, cv2.COLOR_GRAY2RGB)
-        return backtorgb
-
     def get_features(self, cropped_face):
         cropped_face_clone = np.array(cropped_face)
 
@@ -254,11 +237,6 @@ class FaceFeature:
             if flip_id == 1:
                 self.do_flip(img_copy)
 
-            # if self.args.norm:
-            #     norm_img_copy = np.zeros((3, 112, 112))
-            #     norm_img_copy = cv2.normalize(img_copy, norm_img_copy, 0, 255, cv2.NORM_MINMAX)
-            #     img_copy = norm_img_copy
-
             img_copy = np.transpose(img_copy, (2, 0, 1))
             input_blob[0] = img_copy[:, :, ::-1]
 
@@ -267,16 +245,10 @@ class FaceFeature:
         self.face_feature_model.model.forward(db, is_train=False)
         _embedding = self.face_feature_model.model.get_outputs()[0].asnumpy()
 
-
         if self.args.emb_size == 0:
             self.agrs.emb_size = _embedding.shape[0]
 
-        # if self.args.use_flip:
-        #     embedding1 = _embedding[0::2]
-        #     embedding2 = _embedding[1::2]
-        #     embedding = embedding1 + embedding2
-        # else:
-        print("feature size ", self.args.emb_size)
+        # print("feature size ", self.args.emb_size)
         embedding = _embedding
         embedding = preprocessing.normalize(embedding)
         return embedding
@@ -439,45 +411,10 @@ class ObjectsDetection:
         #     out.write(fr)
 
 
-class FaceRecognition:
-    def __init__(self, args):
-        self.args = args
-        self.align = FaceAlign()
-        self.features = FaceFeature(args)
-        self.features_net = FaceFeature(args).build_net()
-        self.face_detection = FaceDetection(args)
-        self.face_detection_net = self.face_detection.build_net()
 
-    def get_face_features(self, faces):
-        return self.features.run(self.features_net, faces, self.align)
 
-    def get_faces(self, img):
-        face_boxes, cropped_faces, landmarks = self.face_detection.detection(img, self.face_detection_net)
-        return face_boxes, cropped_faces, landmarks
 
-    def face_distance(self, face_encodings, face_to_compare):
-        """
-        Given a list of face encodings, compare them to a known face encoding and get a euclidean distance
-        for each comparison face. The distance tells you how similar the faces are.
-        :param faces: List of face encodings to compare
-        :param face_to_compare: A face encoding to compare against
-        :return: A numpy ndarray with the distance for each face in the same order as the 'faces' array
-        """
-        if len(face_encodings) == 0:
-            return np.empty((0))
 
-        return np.linalg.norm(face_encodings - face_to_compare, axis=1)
-
-    def compare_faces(self, known_face_encodings, face_encoding_to_check, tolerance=0.1):
-        """
-        Compare a list of face encodings against a candidate encoding to see if they match.
-        :param known_face_encodings: A list of known face encodings
-        :param face_encoding_to_check: A single face encoding to compare against the list
-        :param tolerance: How much distance between faces to consider it a match. Lower is more strict. 0.6 is typical best performance.
-        :return: A list of True/False values indicating which known_face_encodings match the face encoding to check
-        """
-        distance = self.face_distance(known_face_encodings, face_encoding_to_check)
-        return distance
 
 
 class ScenesChange:
@@ -535,7 +472,6 @@ class ScenesChange:
         return results
 
 
-
 class Synthetic:
     def __init__(self, args):
         self.args = args
@@ -545,7 +481,7 @@ class Synthetic:
         self.objects_detection = None
         self.scenes_count = None
         self.face_features = None
-        # self.showcam = True
+        self.showcam = False
         if args.use_face_detection:
             self.face_detection = FaceDetection(args)
             self.face_detection.build_net()
@@ -566,13 +502,12 @@ class Synthetic:
             self.face_features = FaceFeature(args)
             self.face_features.build_net()
 
-
     def run(self):
         scenes = None
         if self.args.use_scenes_change_count:
             scenes = self.scenes_count.find_scenes()
 
-        if self.args.use_objects_detection or self.args.use_scenes_change_count:
+        if (self.args.use_objects_detection or self.args.use_scenes_change_count) or self.showcam is False:
             cap = cv2.VideoCapture(self.args.input_video)
             ret, fr = cap.read()
             if fr is None:
@@ -594,21 +529,20 @@ class Synthetic:
             detections = []
             ret, fr = cap.read()
             if fr is None:
-                print("Frame is None")
                 break
 
             if self.args.use_face_detection:
-                print("Face Detection ", count)
+                # fr = cv2.GaussianBlur(fr, (5, 5), cv2.BORDER_DEFAULT)
                 detected_face_bboxes, cropped_faces, landmarks = self.face_detection.detection(fr)
                 if self.args.use_ga_prediction:
                     for idx, _ in enumerate(cropped_faces):
                         face = self.face_align.align(fr, detected_face_bboxes[idx], landmarks[idx])
-                        # cv2.imwrite("align.png", face)
+                        cv2.imwrite("align.png", face)
                         if face is None:
                             continue
                         if self.args.use_face_recognition:
                             face_features = self.face_features.run(face)
-                        # The colision in data between get_ga and get emotion, emotion must be executed first
+                        # The collision in data between get_ga and get emotion, emotion must be executed first
                         emotion = self.gea.get_emotion(face)
                         face = np.transpose(face, (2, 0, 1))
                         gender, age = self.gea.get_ga(face)
@@ -622,20 +556,19 @@ class Synthetic:
                         object = {"bbox": detected_face_bboxes[idx], "name": ["Face"]}
                         detections.append(object)
 
-
             if self.args.use_objects_detection:
                 returned_image, _detections = self.objects_detection.run(fr)
                 for _object in _detections:
                     object = {"bbox": _object["box_points"], "name": [_object["name"]]}
                     detections.append(object)
 
-
             for _object in detections:
                 print(_object)
                 cv2.rectangle(fr, (_object["bbox"][0], _object["bbox"][1]), (_object["bbox"][2], _object["bbox"][3]),
                               (255, 195, 0), 2)
                 if len(_object["name"]) == 3:
-                    cv2.putText(fr, "Emotion " + str(_object["name"][2][0]), (_object["bbox"][0], _object["bbox"][1] - 40),
+                    cv2.putText(fr, "Emotion " + str(_object["name"][2][0]),
+                                (_object["bbox"][0], _object["bbox"][1] - 40),
                                 cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
                     cv2.putText(fr, "Gender " + str(_object["name"][0]), (_object["bbox"][0], _object["bbox"][1] - 20),
                                 cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
@@ -645,12 +578,13 @@ class Synthetic:
                     cv2.putText(fr, str(_object["name"][0]), (_object["bbox"][0], _object["bbox"][1]),
                                 cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
 
-            if (self.args.use_objects_detection is False and self.args.use_scenes_change_count is False) or self.showcam:
+            if (
+                    self.args.use_objects_detection is False and self.args.use_scenes_change_count is False) or self.showcam:
                 cv2.imshow("Frame", fr)
                 if cv2.waitKey(32) & 0xFF == ord('q'):
                     break
             if args.use_scenes_change_count:
-                if (count < scenes[num_scene][1]):
+                if count < scenes[num_scene][1]:
                     C = num_scene
                 else:
                     num_scene += 1
@@ -674,4 +608,70 @@ def main(args):
 if __name__ == '__main__':
     args = parser.parse_args()
     print(args)
-    main(args)
+    # main(args)
+
+    # Get aligned image
+    # detection = FaceDetection(args)
+    # detection.build_net()
+    # align = FaceAlign(args)
+    #
+    # # recognition.
+    #
+    # train_images = os.listdir(args.train_dir)
+    # # test_images = os.listdir(args.test_dir)
+    #
+    # if not os.path.exists(os.path.join(args.train_dir, "aligned")):
+    #     os.makedirs(os.path.join(args.train_dir, "aligned"))
+    #
+    # for person in train_images:
+    #     person_imgs = os.listdir(os.path.join(args.train_dir, person))
+    #
+    #     if not os.path.exists(os.path.join(args.train_dir, "aligned", person)):
+    #         os.makedirs(os.path.join(args.train_dir, "aligned", person))
+    #
+    #     for train_image in person_imgs:
+    #         img_path = os.path.join(args.train_dir, person, train_image)
+    #         print(img_path)
+    #         img = cv2.imread(img_path)
+    #         detected_face_bboxes, cropped_faces, landmarks=detection.detection(img)
+    #
+    #         for idx, cropped_face in enumerate(cropped_faces):
+    #             aligned_path = os.path.join(args.train_dir, "aligned", person, str(idx) + "_" + train_image)
+    #             print(aligned_path)
+    #             face = align.align(img, detected_face_bboxes[idx], landmarks[idx])
+    #             # face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
+    #             cv2.imwrite(aligned_path, face)
+    #             # _, cface, _ = detection.detection(face)
+    #             # if cface is not None:
+    #             #     cv2.imwrite(aligned_path, cface[0])
+
+    # recognition.augmenter()
+
+
+
+    features = FaceFeature(args)
+    features.build_net()
+    net = Net(args)
+    recognition = FaceRecognition(args)
+    # Training
+    # recognition.train(net)
+
+
+    # Testing
+    net.load_state_dict(torch.load("checkpoints/checkpoint_299.pth"))
+    test_imgs = os.listdir('datasets/test')
+    for image in test_imgs:
+        img = cv2.imread("datasets/test/" + image)
+        emb = features.run(img)
+        emb = emb.reshape(1, 512)
+        emb_v = Variable(torch.from_numpy(emb))
+        pred, outputs = recognition.run(net, emb_v)
+        cv2.imshow(str(pred) + " -- " + str(max(outputs)), img)
+        cv2.waitKey(0)
+
+
+
+
+
+
+
