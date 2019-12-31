@@ -611,9 +611,9 @@ if __name__ == '__main__':
     # main(args)
 
     # Get aligned image
-    # detection = FaceDetection(args)
-    # detection.build_net()
-    # align = FaceAlign(args)
+    detection = FaceDetection(args)
+    detection.build_net()
+    align = FaceAlign(args)
     #
     # # recognition.
     #
@@ -658,16 +658,37 @@ if __name__ == '__main__':
 
 
     # Testing
-    net.load_state_dict(torch.load("checkpoints/checkpoint_299.pth"))
-    test_imgs = os.listdir('datasets/test')
-    for image in test_imgs:
-        img = cv2.imread("datasets/test/" + image)
-        emb = features.run(img)
-        emb = emb.reshape(1, 512)
-        emb_v = Variable(torch.from_numpy(emb))
-        pred, outputs = recognition.run(net, emb_v)
-        cv2.imshow(str(pred) + " -- " + str(max(outputs)), img)
-        cv2.waitKey(0)
+    # net.load_state_dict(torch.load("checkpoints/checkpoint_299.pth"))
+    # test_imgs = os.listdir('datasets/test')
+    # for image in test_imgs:
+    #     img = cv2.imread("datasets/test/" + image)
+    #     emb = features.run(img)
+    #     emb = emb.reshape(1, 512)
+    #     emb_v = Variable(torch.from_numpy(emb))
+    #     pred, outputs = recognition.run(net, emb_v)
+    #     cv2.imshow(str(pred) + " -- " + str(max(outputs)), img)
+    #     cv2.waitKey(0)
+
+    net.load_state_dict(torch.load("checkpoints/checkpoint_150.pth"))
+    video = "videos/video.mp4"
+    cap = cv2.VideoCapture(video)
+    while True:
+        ret, fr = cap.read()
+        faces, cropped_faces, landmarks = detection.detection(fr)
+        for idx, cropped_face in enumerate(cropped_faces):
+            face = align.align(fr, faces[idx], landmarks[idx])
+            emb = features.run(face)
+            emb = emb.reshape(1, 512)
+            emb_v = Variable(torch.from_numpy(emb))
+            pred, outputs = recognition.run(net, emb_v)
+
+            cv2.rectangle(fr, (faces[idx][0], faces[idx][1]), (faces[idx][2], faces[idx][3]), (255, 195, 0), 2)
+            cv2.putText(fr, pred + ' -- ' + str(max(outputs) * 100), (faces[idx][0], faces[idx][1]), cv2.FONT_HERSHEY_COMPLEX, .5,
+                        (255, 195, 0), 2, cv2.LINE_AA)
+
+            cv2.imshow("Testing", fr)
+        if cv2.waitKey(32) & 0xFF == ord('q'):
+            break
 
 
 
