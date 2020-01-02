@@ -5,7 +5,7 @@
 
 By Vy Pham & Liem Truong (KnG)
 
-![alt text](https://www.upsieutoc.com/images/2020/01/02/Screenshot-from-2020-01-02-16-05-36.png)
+![alt text](https://www.upsieutoc.com/image/FvCwEq)
 
 ## Requirements
 ```Shell
