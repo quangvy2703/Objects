@@ -33,6 +33,7 @@ By Vy Pham & Liem Truong (KnG)
 
 2. You can refer to the example code in ``src\deploy\synthetic.py``.
 ```Shell
+  Line 47.  self.face_recognition_net.load_state_dict(torch.load("checkpoints/checkpoint_290.pth")) # Load face recognition model
   Line 50. self.face_recognition.prepare_images(self.face_detection, self.face_align) # Cropped faces from images
   # After that ./datasets/train/aligned/ contain faces cropped images from training datasets. Check and remove wrong faces.
   Line 51. self.face_recognition.augumenter(self.face_features) # Extracting features and saving into datasets/train/features/
