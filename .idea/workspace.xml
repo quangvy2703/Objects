@@ -2,8 +2,95 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b802d4e9-ffde-4a0a-bf33-e2eb713eef7c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/emotion/emotions.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/emotion/models/emotion_model.hdf5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/emotion/utils/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/emotion/utils/data_augmentation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/emotion/utils/datasets.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/emotion/utils/grad_cam.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/emotion/utils/inference.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/emotion/utils/preprocessor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/emotion/utils/visualizer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/.gitmodules" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/.idea/insightface.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/age_iter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/align/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/align/align_celeb.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/align/align_dataset.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/align/align_dataset_mtcnn.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/align/align_dlib.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/align/align_facescrub.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/align/align_insight.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/align/align_lfw.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/align/align_megaface.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/align/det1.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/align/det2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/align/det3.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/align/detect_face.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/api/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/api/face_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/common/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/common/face_image.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/common/face_preprocess.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/common/noise_sgd.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/age_merge.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/agedb2pack.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/agedb2pack2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/cfp2pack.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/dataset_c2c.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/dataset_clean.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/dataset_info.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/dataset_merge.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/dataset_relabel.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/dir2lst.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/dir2lst_ytf.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/dir2rec.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/face2rec2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/glint2lst.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/data/lfw2pack.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/eval/do_ver.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/eval/gen_glint.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/eval/lfw.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/eval/verification.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/eval/ytf.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/eval/ytf_badcases.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/image_iter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/losses/center_loss.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/megaface/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/megaface/gen_megaface.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/megaface/remove_noises.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/symbols/fdensenet.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/symbols/fdpn.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/symbols/finception_resnet_v2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/symbols/fmobilefacenet.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/symbols/fmobilenet.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/symbols/fmobilenetv2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/symbols/fnasnet.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/symbols/fresnet.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/symbols/fxception.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/symbols/spherenet.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/symbols/symbol_utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/train.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/train.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/train_softmax.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/train_triplet.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/triplet_image_iter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/utils/benchmark.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/objects/detected.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/objects/objects_detection.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,10 +217,14 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="449" y="187" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1577440115881" />
-    <state x="616" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1577671015431">
+    <state width="498" height="446" key="SwitcherDM" timestamp="1577937599320">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="616" y="380" key="com.intellij.ide.util.TipDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1577671015431" />
+    <state width="498" height="446" key="SwitcherDM/0.27.1920.1053@0.27.1920.1053" timestamp="1577937599320" />
+    <state x="616" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1577929833491">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="616" y="380" key="com.intellij.ide.util.TipDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1577929833491" />
     <state x="263" y="472" width="454" height="160" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1577759400637">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
