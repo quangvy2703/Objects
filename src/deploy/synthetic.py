@@ -47,8 +47,8 @@ class Synthetic:
                 self.face_recognition_net.load_state_dict(torch.load("checkpoints/checkpoint_290.pth"))
 
     def train_face_recognition(self):
-        # self.face_recognition.prepare_images(self.face_detection, self.face_align)
-        # self.face_recognition.augumenter(self.face_features)
+        self.face_recognition.prepare_images(self.face_detection, self.face_align)
+        self.face_recognition.augumenter(self.face_features)
         self.face_recognition.train(self.face_recognition_net)
 
     def run(self):
