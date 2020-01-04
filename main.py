@@ -37,6 +37,7 @@ parser.add_argument('--object_detection_model', default='models/resnet50_coco_be
                     help='Path to objects detection model')
 
 # Face recognition
+
 parser.add_argument('--batch_size', type=int, default=32, help="Batch size")
 parser.add_argument('--epochs', type=int, default=300, help="Epochs")
 # parser.add_argument('--emb_size', type=int, default=512, help="Embedding size")

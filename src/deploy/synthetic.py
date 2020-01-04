@@ -1,3 +1,4 @@
+import os
 import cv2
 import numpy as np
 from face_detection import FaceDetection
@@ -9,6 +10,7 @@ from gea import GEA
 from face_features import FaceFeature
 import torch
 from torch.autograd import Variable
+from ffpyplayer.player import MediaPlayer
 
 
 class Synthetic:
@@ -66,6 +68,8 @@ class Synthetic:
             fps = cap.get(cv2.CAP_PROP_FPS)
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
             output = cv2.VideoWriter(self.args.output_video, fourcc, fps, (frame_width, frame_height))
+            cmd = "ffmpeg -y -i {} -acodec libmp3lame videos/audio.mp3".format(self.args.input_video)
+            os.system(cmd)
         else:
             cap = cv2.VideoCapture(0)
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1200)
@@ -102,9 +106,11 @@ class Synthetic:
 
                         gender = "Male" if gender == 1 else "Female"
                         emotion = emotion[0]
-                        if float(max(_outputs[0]))*100 > 80:
+                        if float(max(_outputs[0])) * 100 > 80:
                             object = {"bbox": detected_face_bboxes[idx], "name": [gender, age, emotion,
-                                                                                  pred + "--" + str(round(float(max(_outputs[0]))*100, 2))]}
+                                                                                  pred + "--" + str(round(
+                                                                                      float(max(_outputs[0])) * 100,
+                                                                                      2))]}
                         else:
                             object = {"bbox": detected_face_bboxes[idx], "name": [gender, age, emotion, "Unkown"]}
                         detections.append(object)
@@ -160,3 +166,8 @@ class Synthetic:
             else:
                 output.write(fr)
 
+        name, ext = os.path.splitext(self.args.output_video)
+        new_name = name + "_audio" + ext
+        cmd = "ffmpeg -y -i {} -i {} -shortest {}".format(self.args.output_video,
+                                                          "videos/audio.mp3", new_name)
+        os.system(cmd)

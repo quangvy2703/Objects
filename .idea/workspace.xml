@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="b802d4e9-ffde-4a0a-bf33-e2eb713eef7c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/deploy/synthetic.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/deploy/synthetic.py" afterDir="false" />
     </list>
@@ -139,6 +140,10 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="616" y="380" key="com.intellij.ide.util.TipDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1577929833491" />
+    <state x="613" y="170" width="683" height="764" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1578102801670">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="613" y="170" width="683" height="764" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.27.1920.1053@0.27.1920.1053" timestamp="1578102801670" />
     <state x="263" y="472" width="454" height="160" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1577759400637">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
