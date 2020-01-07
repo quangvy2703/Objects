@@ -49,7 +49,8 @@ class GEA:
 
     def build_emotion_model(self):
         self.emotion_model = load_model(self.args.emotion_model)
-        self.emotion_target_size = self.emotion_model.input_shape[1:3]
+        # self.emotion_target_size = self.emotion_model.input_shape[1:3]
+        self.emotion_target_size = (64,64)
         self.emotion_labels = get_labels('fer2013')
 
     def get_ga(self, img):
@@ -67,17 +68,33 @@ class GEA:
         return gender, age
 
     # {0:'angry',1:'disgust',2:'fear',3:'happy',4:'sad',5:'surprise',6:'neutral'}
+    # def get_emotion(self, img):
+    #     emotion_text = []
+    #     emotion_probability = []
+    #     gray_face = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #     gray_face = cv2.resize(gray_face, self.emotion_target_size)
+    #     gray_face = preprocess_input(gray_face, True)
+    #     gray_face = np.expand_dims(gray_face, 0)
+    #     gray_face = np.expand_dims(gray_face, -1)
+    #     emotion_prediction = self.emotion_model.predict(gray_face)
+    #     emotion_probability.append(np.max(emotion_prediction))
+    #     emotion_label_arg = np.argmax(emotion_prediction)
+    #     emotion_text.append(self.emotion_labels[emotion_label_arg])
+    #
+    #     return emotion_text, emotion_prediction
     def get_emotion(self, img):
         emotion_text = []
         emotion_probability = []
         gray_face = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         gray_face = cv2.resize(gray_face, self.emotion_target_size)
-        gray_face = preprocess_input(gray_face, True)
+        gray_face = gray_face.astype("float") / 255.0
+        # gray_face = preprocess_input(gray_face, True)
         gray_face = np.expand_dims(gray_face, 0)
-        gray_face = np.expand_dims(gray_face, -1)
-        emotion_prediction = self.emotion_model.predict(gray_face)
+        # gray_face = np.expand_dims(gray_face, -1)
+        gray_face = np.reshape(gray_face,(1,64,64,1))
+        emotion_prediction = self.emotion_model.predict(gray_face)[0]
         emotion_probability.append(np.max(emotion_prediction))
         emotion_label_arg = np.argmax(emotion_prediction)
         emotion_text.append(self.emotion_labels[emotion_label_arg])
 
-        return emotion_text, emotion_probability
+        return emotion_text, emotion_prediction

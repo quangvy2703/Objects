@@ -11,39 +11,38 @@ parser = argparse.ArgumentParser(description="Synthetic")
 parser.add_argument('--use_face_detection', type=bool, default=False,
                     help="Using face detection?")
 parser.add_argument('--flip', default=False, type=bool)
-parser.add_argument('--face_detection_model', default='models/retinaface-R50/R50', type=str,
+parser.add_argument('--face_detection_model', default='/media/liem/DATA/2019_e/faceRecognition/model/retinaface-R50/R50', type=str,
                     help="Path to face detection model, examples, /50 is prefix")
 # parser.add_argument('--face_detection_model_path', default='../models/mnet.25/mnet.25', type=str)
 
 # Age, emotion, gender
 parser.add_argument('--use_ga_prediction', type=bool, default=False, help="Using age, emotion prediction?")
-parser.add_argument('--ga_model', default='models/gamodel-r50/model, 0',
+parser.add_argument('--ga_model', default='/media/liem/DATA/2019_e/faceRecognition/insightface/gender-age/model/model, 0',
                     help='Path to gender age prediction model')
 parser.add_argument('--use_emotion_prediction', type=bool, default=False,
                     help="Using emotion prediction?")
-parser.add_argument('--emotion_model', type=str, default="models/emotion_model.hdf5",
+parser.add_argument('--emotion_model', type=str, default="/media/liem/DATA/2019_e/emotion/other/Emotion-recognition/models/_mini_XCEPTION.102-0.66.hdf5",
                     help="Path to emotion prediction model")
 
 # Face features
 parser.add_argument('--use_face_recognition', type=bool, default=False, help="Using face recognition?")
 # parser.add_argument('--batch_size', type=int, default=32)
 parser.add_argument('--emb_size', type=int, default=512, help="Embedding size of face features")
-parser.add_argument('--face_feature_model', type=str, default='models/model-r100-ii/model, 0',
+parser.add_argument('--face_feature_model', type=str, default='/media/liem/DATA/2019_e/faceRecognition/insightface/models/model-r100-arcface-ms1m-refine-v2/model-r100-ii/model, 0',
                     help="Path to face features extraction model")
 
 # Object Detection
 parser.add_argument('--use_objects_detection', type=bool, default=False, help="Using object detection?")
-parser.add_argument('--object_detection_model', default='models/resnet50_coco_best_v2.0.1.h5',
+parser.add_argument('--object_detection_model', default='/media/liem/DATA/2019_e/faceRecognition/model/resnet50_coco_best_v2.1.0.h5',
                     help='Path to objects detection model')
 
 # Face recognition
-
 parser.add_argument('--batch_size', type=int, default=32, help="Batch size")
 parser.add_argument('--epochs', type=int, default=300, help="Epochs")
 # parser.add_argument('--emb_size', type=int, default=512, help="Embedding size")
 parser.add_argument('--train_dir', type=str, default="datasets/train/features")
 parser.add_argument('--test_dir', type=str, default="datasets/val/features")
-parser.add_argument('--n_classes', type=int, default=3, help="Number of peoples")
+parser.add_argument('--n_classes', type=int, default=4, help="Number of peoples")
 parser.add_argument('--train', action='store_true')
 
 # Scenes change
