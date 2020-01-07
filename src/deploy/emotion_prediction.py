@@ -15,8 +15,9 @@ import cv2
 import torch
 from torch.autograd import Variable
 import tqdm
+from __utils import progress_bar
 #
-categories = {'Ha-Lan': 0, 'Ngan': 1, 'Dung': 2, 'Tra-Long': 3}
+categories = {'angry': 0, 'disgust': 1, 'fear': 2, 'happy': 3, 'neutral': 4, 'sad': 5, 'surprise': 6}
 hidden_dim = 2048
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -34,17 +35,28 @@ class FacialDataLoader(DataLoader):
         return len(self.data_x)
 
     def load_data(self):
-        characters = os.listdir(self.args.train_dir + "/features")
-        for character in characters:
-            print("Loading data ", character.rsplit('.', 2), categories[character.rsplit('.', 2)[0]])
-            features = np.load(os.path.join(self.args.train_dir, "features", character))
+        emotions = os.listdir(self.args.train_dir + "/features")
+        for emotion in emotions:
+            print("Loading data ", emotion.rsplit('.', 2), categories[emotion.rsplit('.', 2)[0]])
+            features = np.load(os.path.join(self.args.train_dir, "features", emotion))
             self.data_x = np.concatenate((self.data_x, features))
             if self.data_y is None:
-                self.data_y = np.array([categories[character.rsplit('.', 2)[0]]] * len(features))
+                self.data_y = np.array([categories[emotion.rsplit('.', 2)[0]]] * len(features))
             else:
                 self.data_y = np.concatenate((self.data_y,
-                                            np.array([categories[character.rsplit('.', 2)[0]]] * len(features))))
+                                            np.array([categories[emotion.rsplit('.', 2)[0]]] * len(features))))
 
+    def load_test_data(self):
+        emotions = os.listdir(self.args.test_dir + "/features")
+        for emotion in emotions:
+            print("Loading data ", emotion.rsplit('.', 2), categories[emotion.rsplit('.', 2)[0]])
+            features = np.load(os.path.join(self.args.test_dir, "features", emotion))
+            self.data_x = np.concatenate((self.data_x, features))
+            if self.data_y is None:
+                self.data_y = np.array([categories[emotion.rsplit('.', 2)[0]]] * len(features))
+            else:
+                self.data_y = np.concatenate((self.data_y,
+                                            np.array([categories[emotion.rsplit('.', 2)[0]]] * len(features))))
 
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
@@ -74,36 +86,63 @@ class Net(nn.Module):
         return out
 
 
-class FaceRecognition:
+class EmotionPrediction:
     def __init__(self, args):
         self.args = args
         pass
 
     def prepare_images(self, detection, align):
         train_images = os.listdir(self.args.train_dir)
-        # test_images = os.listdir(args.test_dir)
+        test_images = os.listdir(self.args.test_dir)
 
-        if not os.path.exists(os.path.join(self.args.train_dir,  "aligned")):
-            os.makedirs(os.path.join(self.args.train_dir, "aligned"))
+        if not os.path.exists(os.path.join(self.args.train_dir, '..', "aligned")):
+            os.makedirs(os.path.join(self.args.train_dir, '..', "aligned"))
 
-        for person in train_images:
-            person_imgs = os.listdir(os.path.join(self.args.train_dir, person))
+        if not os.path.exists(os.path.join(self.args.test_dir, '..', "aligned")):
+            os.makedirs(os.path.join(self.args.test_dir, '..',"aligned"))
 
-            if not os.path.exists(os.path.join(self.args.train_dir, "aligned", person)):
-                os.makedirs(os.path.join(self.args.train_dir, "aligned", person))
+        for emotion in train_images:
+            emotion_imgs = os.listdir(os.path.join(self.args.train_dir, emotion))
 
-            for train_image in person_imgs:
-                img_path = os.path.join(self.args.train_dir, person, train_image)
+            if not os.path.exists(os.path.join(self.args.train_dir, '..', "aligned", emotion)):
+                os.makedirs(os.path.join(self.args.train_dir, '..', "aligned", emotion))
+
+            for train_image in emotion_imgs:
+                img_path = os.path.join(self.args.train_dir, emotion, train_image)
                 print(img_path)
                 img = cv2.imread(img_path)
+                if img is None:
+                    continue
                 detected_face_bboxes, cropped_faces, landmarks = detection.detection(img)
 
                 for idx, cropped_face in enumerate(cropped_faces):
-                    aligned_path = os.path.join(self.args.train_dir, "aligned", person, str(idx) + "_" + train_image)
+                    aligned_path = os.path.join(self.args.train_dir, '..', "aligned", emotion, str(idx) + "_" + train_image)
                     print(aligned_path)
                     face = align.align(img, detected_face_bboxes[idx], landmarks[idx])
 
                     cv2.imwrite(aligned_path, face)
+        if self.args.test_dir is not None:
+            for emotion in test_images:
+                person_imgs = os.listdir(os.path.join(self.args.test_dir, emotion))
+
+                if not os.path.exists(os.path.join(self.args.test_dir, '..', "aligned", emotion)):
+                    os.makedirs(os.path.join(self.args.test_dir, '..', "aligned", emotion))
+
+                for test_image in person_imgs:
+                    img_path = os.path.join(self.args.test_dir, emotion, test_image)
+                    print(img_path)
+                    img = cv2.imread(img_path)
+                    if img is None:
+                        continue
+                    detected_face_bboxes, cropped_faces, landmarks = detection.detection(img)
+
+                    for idx, cropped_face in enumerate(cropped_faces):
+                        aligned_path = os.path.join(self.args.test_dir, '..', "aligned", emotion, str(idx) + "_" + test_image)
+                        print(aligned_path)
+                        face = align.align(img, detected_face_bboxes[idx], landmarks[idx])
+
+                        cv2.imwrite(aligned_path, face)
+
 
     def prewhiten(self, x):
         mean = np.mean(x)
@@ -130,14 +169,14 @@ class FaceRecognition:
             )
         ])
 
-        images_dir = os.path.join(self.args.train_dir, "aligned")
-        characeters = os.listdir(images_dir)
-        print("Augumenting data...")
-        for character in characeters:
+        images_dir = os.path.join(self.args.train_dir, '..', "aligned")
+        emotions = os.listdir(images_dir)
+        print("Augumenting training data...")
+        for emotion in emotions:
             features = []
-            images = os.listdir(os.path.join(images_dir, character))
+            images = os.listdir(os.path.join(images_dir, emotion))
             for image in images:
-                image_path = os.path.join(images_dir, character, image)
+                image_path = os.path.join(images_dir, emotion, image)
                 img = cv2.imread(image_path)
                 for i in range(100):
                     img_aug = seq.augment_image(img)
@@ -146,12 +185,36 @@ class FaceRecognition:
                     embed = features_extraction.run(img_aug)
                     features.append(embed)
 
-            save_path = os.path.join(self.args.train_dir, "features", character + ".npy")
-            if not os.path.exists(os.path.join(self.args.train_dir, "features")):
-                os.mkdir(os.path.join(self.args.train_dir, "features"))
+            save_path = os.path.join(self.args.train_dir, '..', "features", emotion + ".npy")
+            if not os.path.exists(os.path.join(self.args.train_dir, '..', "features")):
+                os.mkdir(os.path.join(self.args.train_dir, '..', "features"))
             features = np.asarray(features).reshape((len(features), self.args.emb_size))
-            print(character, features.shape)
+            print(emotion, features.shape)
             np.save(save_path, features)
+
+        if self.args.test_dir is not None:
+            images_dir = os.path.join(self.args.test_dir, '..', "aligned")
+            emotions = os.listdir(images_dir)
+            print("Augumenting testing data...")
+            for emotion in emotions:
+                features = []
+                images = os.listdir(os.path.join(images_dir, emotion))
+                for image in images:
+                    image_path = os.path.join(images_dir, emotion, image)
+                    img = cv2.imread(image_path)
+                    for i in range(100):
+                        img_aug = seq.augment_image(img)
+                        # img_aug = self.prewhiten(img_aug)
+
+                        embed = features_extraction.run(img_aug)
+                        features.append(embed)
+
+                save_path = os.path.join(self.args.test_dir, '..', "features", emotion + ".npy")
+                if not os.path.exists(os.path.join(self.args.test_dir, '..', "features")):
+                    os.mkdir(os.path.join(self.args.test_dir, "features"))
+                features = np.asarray(features).reshape((len(features), self.args.emb_size))
+                print(emotion, features.shape)
+                np.save(save_path, features)
 
 
     def train(self, net):
@@ -162,9 +225,13 @@ class FaceRecognition:
                                                 mode='exp_range', cycle_momentum=True)
         train_data = FacialDataLoader(self.args)
         train_data.load_data()
-
         trainloader = torch.utils.data.DataLoader(train_data, batch_size=self.args.batch_size,
                                                   shuffle=True, num_workers=2)
+
+        test_data = FacialDataLoader(self.args)
+        test_data.load_test_data()
+        testloader = torch.utils.data.DataLoader(test_data, batch_size=self.args.batch_size,
+                                                  shuffle=False, num_workers=2)
 
         for epoch in range(self.args.epochs):
             running_loss = 0.0
@@ -188,6 +255,28 @@ class FaceRecognition:
             if epoch % 10 == 0 or epoch == self.args.epochs - 1:
                 torch.save(net.state_dict(), 'checkpoints/checkpoint_' + str(epoch) + '.pth')
         print('Finished Training')
+
+        net.eval()
+        test_loss = 0
+        correct = 0
+        total = 0
+        with torch.no_grad():
+            for batch_idx, (inputs, targets) in enumerate(testloader):
+                inputs, targets = inputs.to(device), targets.to(device)
+                outputs = net(inputs)
+                loss = criterion(outputs, targets)
+
+                test_loss += loss.item()
+                _, predicted = outputs.max(1)
+                total += targets.size(0)
+                correct += predicted.eq(targets).sum().item()
+
+                progress_bar(batch_idx, len(testloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+                    % (test_loss/(batch_idx+1), 100.*correct/total, correct, total))
+                # print (batch_idx, len(testloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+                #              % (test_loss / (batch_idx + 1), 100. * correct / total, correct, total))
+
+
 
     def run(self, net, img):
         correct = 0

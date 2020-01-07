@@ -1,11 +1,13 @@
 import os
 import cv2
 import numpy as np
+import progressbar
 from face_detection import FaceDetection
 from face_align import FaceAlign
 from objects_detection import ObjectsDetection
 from scenes_change import ScenesChange
 from face_recognition import FaceRecognition, Net
+from emotion_prediction import EmotionPrediction, Net as EP_Net
 from gea import GEA
 from face_features import FaceFeature
 import torch
@@ -23,7 +25,9 @@ class Synthetic:
         self.scenes_count = None
         self.face_features = None
         self.face_recognition_net = None
-        self.showcam = False
+        self.emotion_prediction = None
+        self.emotion_prediction_net = None
+        self.showcam = True
         if args.use_face_detection:
             self.face_detection = FaceDetection(args)
             self.face_detection.build_net()
@@ -33,6 +37,10 @@ class Synthetic:
             self.gea = GEA(args)
             self.gea.build_ga_model()
             self.gea.build_emotion_model()
+
+        if args.use_emotion_prediction:
+            self.emotion_prediction = EmotionPrediction(args)
+            self.emotion_prediction_net = EP_Net(args)
 
         if args.use_objects_detection:
             self.objects_detection = ObjectsDetection(args)
@@ -53,12 +61,18 @@ class Synthetic:
         self.face_recognition.augumenter(self.face_features)
         self.face_recognition.train(self.face_recognition_net)
 
+    def train_emotion_prediction(self):
+        self.emotion_prediction.prepare_images(self.face_detection, self.face_align)
+        self.emotion_prediction.augumenter(self.face_features)
+        self.emotion_prediction.train(self.emotion_prediction_net)
+
     def run(self):
         scenes = None
+        n_frames = 0
         if self.args.use_scenes_change_count:
             scenes = self.scenes_count.find_scenes()
 
-        if (self.args.use_objects_detection or self.args.use_scenes_change_count) or self.showcam is False:
+        if self.args.use_objects_detection is False or self.showcam is False:
             cap = cv2.VideoCapture(self.args.input_video)
             ret, fr = cap.read()
             if fr is None:
@@ -66,6 +80,7 @@ class Synthetic:
             frame_height, frame_width, _ = fr.shape
 
             fps = cap.get(cv2.CAP_PROP_FPS)
+            n_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
             output = cv2.VideoWriter(self.args.output_video, fourcc, fps, (frame_width, frame_height))
             cmd = "ffmpeg -y -i {} -acodec libmp3lame videos/audio.mp3".format(self.args.input_video)
@@ -77,6 +92,8 @@ class Synthetic:
 
         count = 0
         num_scene = 0
+        if n_frames is not 0:
+            bar = progressbar.ProgressBar(maxval=n_frames).start()
         while True:
             # print("Frame ", count)
             detections = []
@@ -106,7 +123,7 @@ class Synthetic:
 
                         gender = "Male" if gender == 1 else "Female"
                         emotion = emotion[0]
-                        if float(max(_outputs[0])) * 100 > 80:
+                        if float(max(_outputs[0])) * 100 > 95:
                             object = {"bbox": detected_face_bboxes[idx], "name": [gender, age, emotion,
                                                                                   pred + "--" + str(round(
                                                                                       float(max(_outputs[0])) * 100,
@@ -126,7 +143,7 @@ class Synthetic:
                     detections.append(object)
 
             for _object in detections:
-                print(_object)
+                # print(_object)
                 cv2.rectangle(fr, (_object["bbox"][0], _object["bbox"][1]), (_object["bbox"][2], _object["bbox"][3]),
                               (255, 195, 0), 2)
                 if len(_object["name"]) == 4:
@@ -157,15 +174,17 @@ class Synthetic:
                     fontScale=1.0,
                     color=(255, 0, 255))
                 # output.write(fr)
-                count += 1
-
+            count += 1
+            if n_frames is not 0:
+                bar.update(count)
             if self.showcam:
                 cv2.imshow("Frame", fr)
                 if cv2.waitKey(32) & 0xFF == ord('q'):
                     break
             else:
                 output.write(fr)
-
+        cap.release()
+        output.release()
         name, ext = os.path.splitext(self.args.output_video)
         new_name = name + "_audio" + ext
         cmd = "ffmpeg -y -i {} -i {} -shortest {}".format(self.args.output_video,
