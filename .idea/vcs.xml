@@ -4,5 +4,6 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/emotion" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/face" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/keras-retinanet" vcs="Git" />
   </component>
 </project>

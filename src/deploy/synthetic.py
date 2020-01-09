@@ -6,15 +6,15 @@ from face_detection import FaceDetection
 from face_align import FaceAlign
 from objects_detection import ObjectsDetection
 from scenes_change import ScenesChange
-from face_recognition import FaceRecognition, Net
+from _face_recognition import FaceRecognition, Net
 from emotion_prediction import EmotionPrediction, Net as EP_Net
 from gea import GEA
 from face_features import FaceFeature
 import torch
 from torch.autograd import Variable
-from ffpyplayer.player import MediaPlayer
 
 
+prexfix_path = "/media/vy/DATA/projects/face/project3/Objects"
 class Synthetic:
     def __init__(self, args):
         self.args = args
@@ -25,9 +25,14 @@ class Synthetic:
         self.scenes_count = None
         self.face_features = None
         self.face_recognition_net = None
+
         self.emotion_prediction = None
         self.emotion_prediction_net = None
         self.showcam = True
+
+        self.showcam = False
+        self.emotion_labels = None
+
         if args.use_face_detection:
             self.face_detection = FaceDetection(args)
             self.face_detection.build_net()
@@ -38,12 +43,15 @@ class Synthetic:
             self.gea.build_ga_model()
             self.gea.build_emotion_model()
 
+            self.emotion_labels = self.gea.emotion_labels
+
         if args.use_emotion_prediction:
             self.emotion_prediction = EmotionPrediction(args)
             self.emotion_prediction_net = EP_Net(args)
 
         if args.use_objects_detection:
             self.objects_detection = ObjectsDetection(args)
+            self.objects_detection.build_net()
 
         if args.use_scenes_change_count:
             self.scenes_count = ScenesChange(args)
@@ -54,7 +62,7 @@ class Synthetic:
             self.face_recognition = FaceRecognition(args)
             self.face_recognition_net = Net(args)
             if not args.train:
-                self.face_recognition_net.load_state_dict(torch.load("checkpoints/checkpoint_290.pth"))
+                self.face_recognition_net.load_state_dict(torch.load(prexfix_path + "/checkpoints/checkpoint_290.pth"))
 
     def train_face_recognition(self):
         self.face_recognition.prepare_images(self.face_detection, self.face_align)
@@ -62,8 +70,8 @@ class Synthetic:
         self.face_recognition.train(self.face_recognition_net)
 
     def train_emotion_prediction(self):
-        self.emotion_prediction.prepare_images(self.face_detection, self.face_align)
-        self.emotion_prediction.augumenter(self.face_features)
+        # self.emotion_prediction.prepare_images(self.face_detection, self.face_align)
+        # self.emotion_prediction.augumenter(self.face_features)
         self.emotion_prediction.train(self.emotion_prediction_net)
 
     def run(self):
@@ -72,7 +80,7 @@ class Synthetic:
         if self.args.use_scenes_change_count:
             scenes = self.scenes_count.find_scenes()
 
-        if self.args.use_objects_detection is False or self.showcam is False:
+        if self.showcam is False:
             cap = cv2.VideoCapture(self.args.input_video)
             ret, fr = cap.read()
             if fr is None:
@@ -107,7 +115,7 @@ class Synthetic:
                 if self.args.use_ga_prediction:
                     for idx, _ in enumerate(cropped_faces):
                         face = self.face_align.align(fr, detected_face_bboxes[idx], landmarks[idx])
-                        cv2.imwrite("align.png", face)
+                        # cv2.imwrite("align.png", face)
                         if face is None:
                             continue
                         if self.args.use_face_recognition:
@@ -117,7 +125,7 @@ class Synthetic:
                             pred, _outputs = self.face_recognition.run(self.face_recognition_net, emb_v)
 
                         # The collision in data between get_ga and get emotion, emotion must be executed first
-                        emotion = self.gea.get_emotion(face)
+                        emotion, prob_emotions = self.gea.get_emotion(face)
                         face = np.transpose(face, (2, 0, 1))
                         gender, age = self.gea.get_ga(face)
 
@@ -127,9 +135,11 @@ class Synthetic:
                             object = {"bbox": detected_face_bboxes[idx], "name": [gender, age, emotion,
                                                                                   pred + "--" + str(round(
                                                                                       float(max(_outputs[0])) * 100,
-                                                                                      2))]}
+                                                                                      2))],
+                                      "prob_emotions":prob_emotions}
                         else:
-                            object = {"bbox": detected_face_bboxes[idx], "name": [gender, age, emotion, "Unkown"]}
+                            object = {"bbox": detected_face_bboxes[idx], "name": [gender, age, emotion, "Unkown"],
+                                      "prob_emotions": prob_emotions}
                         detections.append(object)
                 else:
                     for idx, face in enumerate(detected_face_bboxes):
@@ -137,9 +147,14 @@ class Synthetic:
                         detections.append(object)
 
             if self.args.use_objects_detection:
-                returned_image, _detections = self.objects_detection.run(fr)
-                for _object in _detections:
-                    object = {"bbox": _object["box_points"], "name": [_object["name"]]}
+                # print(os.getcwd())
+                # cv2.imwrite("src/deploy/image.png", fr)
+                boxes, scores, labels = self.objects_detection.run(fr)
+                for box, score, label in zip(boxes[0], scores[0], labels[0]):
+                    # scores are sorted so we can break
+                    if score < 0.5:
+                        break
+                    object = {"bbox": box, "name": [self.objects_detection.labels_to_names[label]]}
                     detections.append(object)
 
             for _object in detections:
@@ -148,18 +163,39 @@ class Synthetic:
                               (255, 195, 0), 2)
                 if len(_object["name"]) == 4:
                     cv2.putText(fr, "ID " + str(_object["name"][3]),
-                                (_object["bbox"][0], _object["bbox"][1] - 60),
-                                cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
-                    cv2.putText(fr, "Emotion " + str(_object["name"][2][0]),
-                                (_object["bbox"][0], _object["bbox"][1] - 40),
-                                cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
-                    cv2.putText(fr, "Gender " + str(_object["name"][0]), (_object["bbox"][0], _object["bbox"][1] - 20),
-                                cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
-                    cv2.putText(fr, "Age " + str(_object["name"][1]), (_object["bbox"][0], _object["bbox"][1]),
-                                cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
+                                (_object["bbox"][0], _object["bbox"][1] - 20),
+                                cv2.FONT_HERSHEY_SIMPLEX, .5, (177, 18, 38), 2, cv2.LINE_AA)
+                    cv2.putText(fr, str(_object["name"][1])+", "+str(_object["name"][0]),
+                                (_object["bbox"][0], _object["bbox"][1]),
+                                cv2.FONT_HERSHEY_SIMPLEX, .5, (177, 18, 38), 2, cv2.LINE_AA)
+                    # cv2.putText(fr, "Emotion " + str(_object["name"][2][0]),
+                    #             (_object["bbox"][0], _object["bbox"][1] - 40),
+                    #             cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
+                    # cv2.putText(fr, "Gender " + str(_object["name"][0]), (_object["bbox"][0], _object["bbox"][1] - 20),
+                    #             cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
+                    # cv2.putText(fr, "Age " + str(_object["name"][1]), (_object["bbox"][0], _object["bbox"][1]),
+                    #             cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
+                    position = 0
+                    color = 50
+                    color1 = 0
+                    for i in range(0, len(self.emotion_labels)):
+                        cv2.putText(fr, self.emotion_labels[i], (_object["bbox"][2]+5, _object["bbox"][1] + position),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, (color, color1, 50), 1, cv2.LINE_AA)
+
+                        cv2.rectangle(fr, (_object["bbox"][2]+5, _object["bbox"][1]+position+5),
+                                      (_object["bbox"][2]+5 + (int)(50*_object["prob_emotions"][0][i]), _object["bbox"][1]+position+10),
+                                      (color, color1, 50), -1)
+                        # cv2.rectangle(fr, (_object["bbox"][2]+5, _object["bbox"][1]+position+5),
+                        #               (_object["bbox"][2]+5 + (int)(50*_object["prob_emotions"][i]), _object["bbox"][1]+position+10),
+                        #               (color, color1, 50), -1)
+                        position += 30
+                        color += 10
+                        color1 += 50
+                    # for i in range(0, len(self.emotion_labels)):
+                    #     print(self.emotion_labels[i],_object["prob_emotions"][0][i])
                 else:
                     cv2.putText(fr, str(_object["name"][0]), (_object["bbox"][0], _object["bbox"][1]),
-                                cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
+                                cv2.FONT_HERSHEY_SIMPLEX, .5, (177, 18, 38), 2, cv2.LINE_AA)
 
             if self.args.use_scenes_change_count:
                 if count < scenes[num_scene][1]:
@@ -175,8 +211,12 @@ class Synthetic:
                     color=(255, 0, 255))
                 # output.write(fr)
             count += 1
+
             if n_frames is not 0:
                 bar.update(count)
+            # if count > 500:
+            #     break
+
             if self.showcam:
                 cv2.imshow("Frame", fr)
                 if cv2.waitKey(32) & 0xFF == ord('q'):
@@ -185,8 +225,10 @@ class Synthetic:
                 output.write(fr)
         cap.release()
         output.release()
+
         name, ext = os.path.splitext(self.args.output_video)
         new_name = name + "_audio" + ext
+        print ("save :", new_name)
         cmd = "ffmpeg -y -i {} -i {} -shortest {}".format(self.args.output_video,
                                                           "videos/audio.mp3", new_name)
         os.system(cmd)

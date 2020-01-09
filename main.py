@@ -33,7 +33,8 @@ parser.add_argument('--face_feature_model', type=str, default='models/model-r100
 
 # Object Detection
 parser.add_argument('--use_objects_detection', type=bool, default=False, help="Using object detection?")
-parser.add_argument('--object_detection_model', default='models/resnet50_coco_best_v2.0.1.h5',
+parser.add_argument('--object_detection_model',
+                    default='models/resnet50_coco_best_v2.1.0.h5',
                     help='Path to objects detection model')
 
 # Face recognition
