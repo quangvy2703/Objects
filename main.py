@@ -61,8 +61,7 @@ parser.add_argument('--gpuid', type=int, default=0, help="GPU ID")
 def main(args):
     syn = Synthetic(args)
     if args.train:
-        # syn.train_face_recognition()
-        syn.train_emotion_prediction()
+        syn.train_face_recognition()
     syn.run()
 
 

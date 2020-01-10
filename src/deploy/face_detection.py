@@ -18,6 +18,8 @@ class FaceDetection:
         @param net:
         @return: RetinaFace model
         """
+
+        # self.face_detection_model = RetinaFace(self.args.face_detection_model, 0, self.args.gpuid, net)
         self.face_detection_model = RetinaFace(self.args.face_detection_model, 0, self.args.gpuid, net)
 
     def detection(self, img):

@@ -9,6 +9,7 @@ from utils.datasets import get_labels
 from utils.preprocessor import preprocess_input
 import tensorflow as tf
 import tensorflow.python.keras.backend as K
+
 class GEA:
     def __init__(self, args):
         _config = tf.compat.v1.ConfigProto()
@@ -82,19 +83,3 @@ class GEA:
         emotion_text.append(self.emotion_labels[emotion_label_arg])
 
         return emotion_text, emotion_prediction
-    # def get_emotion(self, img):
-    #     emotion_text = []
-    #     emotion_probability = []
-    #     gray_face = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    #     gray_face = cv2.resize(gray_face, self.emotion_target_size)
-    #     gray_face = gray_face.astype("float") / 255.0
-    #     # gray_face = preprocess_input(gray_face, True)
-    #     gray_face = np.expand_dims(gray_face, 0)
-    #     # gray_face = np.expand_dims(gray_face, -1)
-    #     gray_face = np.reshape(gray_face,(1,64,64,1))
-    #     emotion_prediction = self.emotion_model.predict(gray_face)[0]
-    #     emotion_probability.append(np.max(emotion_prediction))
-    #     emotion_label_arg = np.argmax(emotion_prediction)
-    #     emotion_text.append(self.emotion_labels[emotion_label_arg])
-    #
-    #     return emotion_text, emotion_prediction

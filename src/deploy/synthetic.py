@@ -7,7 +7,6 @@ from face_align import FaceAlign
 from objects_detection import ObjectsDetection
 from scenes_change import ScenesChange
 from _face_recognition import FaceRecognition, Net
-from emotion_prediction import EmotionPrediction, Net as EP_Net
 from gea import GEA
 from face_features import FaceFeature
 import torch
@@ -42,12 +41,7 @@ class Synthetic:
             self.gea = GEA(args)
             self.gea.build_ga_model()
             self.gea.build_emotion_model()
-
             self.emotion_labels = self.gea.emotion_labels
-
-        if args.use_emotion_prediction:
-            self.emotion_prediction = EmotionPrediction(args)
-            self.emotion_prediction_net = EP_Net(args)
 
         if args.use_objects_detection:
             self.objects_detection = ObjectsDetection(args)
@@ -69,11 +63,6 @@ class Synthetic:
         self.face_recognition.augumenter(self.face_features)
         self.face_recognition.train(self.face_recognition_net)
 
-    def train_emotion_prediction(self):
-        # self.emotion_prediction.prepare_images(self.face_detection, self.face_align)
-        # self.emotion_prediction.augumenter(self.face_features)
-        self.emotion_prediction.train(self.emotion_prediction_net)
-
     def run(self):
         scenes = None
         n_frames = 0
@@ -90,8 +79,8 @@ class Synthetic:
             fps = cap.get(cv2.CAP_PROP_FPS)
             n_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
-            output = cv2.VideoWriter(self.args.output_video, fourcc, fps, (frame_width, frame_height))
-            cmd = "ffmpeg -y -i {} -acodec libmp3lame videos/audio.mp3".format(self.args.input_video)
+            output = cv2.VideoWriter("video.mp4", fourcc, fps, (frame_width, frame_height))
+            cmd = "ffmpeg -y -i {} -acodec libmp3lame audio.mp3".format(self.args.input_video)
             os.system(cmd)
         else:
             cap = cv2.VideoCapture(0)
@@ -109,6 +98,8 @@ class Synthetic:
             if fr is None:
                 break
 
+            fr_copy = fr.copy()
+
             if self.args.use_face_detection:
                 # fr = cv2.GaussianBlur(fr, (5, 5), cv2.BORDER_DEFAULT)
                 detected_face_bboxes, cropped_faces, landmarks = self.face_detection.detection(fr)
@@ -118,6 +109,8 @@ class Synthetic:
                         # cv2.imwrite("align.png", face)
                         if face is None:
                             continue
+
+                        _outputs = [[0, 0]]
                         if self.args.use_face_recognition:
                             emb = self.face_features.run(face)
                             emb = emb.reshape(1, 512)
@@ -125,7 +118,13 @@ class Synthetic:
                             pred, _outputs = self.face_recognition.run(self.face_recognition_net, emb_v)
 
                         # The collision in data between get_ga and get emotion, emotion must be executed first
-                        emotion, prob_emotions = self.gea.get_emotion(face)
+
+                        emotion = ["None", "None"]
+                        prob_emotions = [1, 1, 1, 1]
+
+                        if self.args.use_emotion_prediction:
+                            emotion, prob_emotions = self.gea.get_emotion(face)
+
                         face = np.transpose(face, (2, 0, 1))
                         gender, age = self.gea.get_ga(face)
 
@@ -149,7 +148,7 @@ class Synthetic:
             if self.args.use_objects_detection:
                 # print(os.getcwd())
                 # cv2.imwrite("src/deploy/image.png", fr)
-                boxes, scores, labels = self.objects_detection.run(fr)
+                boxes, scores, labels = self.objects_detection.run(fr_copy)
                 for box, score, label in zip(boxes[0], scores[0], labels[0]):
                     # scores are sorted so we can break
                     if score < 0.5:
@@ -158,7 +157,6 @@ class Synthetic:
                     detections.append(object)
 
             for _object in detections:
-                # print(_object)
                 cv2.rectangle(fr, (_object["bbox"][0], _object["bbox"][1]), (_object["bbox"][2], _object["bbox"][3]),
                               (255, 195, 0), 2)
                 if len(_object["name"]) == 4:
@@ -168,31 +166,23 @@ class Synthetic:
                     cv2.putText(fr, str(_object["name"][1])+", "+str(_object["name"][0]),
                                 (_object["bbox"][0], _object["bbox"][1]),
                                 cv2.FONT_HERSHEY_SIMPLEX, .5, (177, 18, 38), 2, cv2.LINE_AA)
-                    # cv2.putText(fr, "Emotion " + str(_object["name"][2][0]),
-                    #             (_object["bbox"][0], _object["bbox"][1] - 40),
-                    #             cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
-                    # cv2.putText(fr, "Gender " + str(_object["name"][0]), (_object["bbox"][0], _object["bbox"][1] - 20),
-                    #             cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
-                    # cv2.putText(fr, "Age " + str(_object["name"][1]), (_object["bbox"][0], _object["bbox"][1]),
-                    #             cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 195, 0), 2, cv2.LINE_AA)
+
                     position = 0
                     color = 50
                     color1 = 0
-                    for i in range(0, len(self.emotion_labels)):
-                        cv2.putText(fr, self.emotion_labels[i], (_object["bbox"][2]+5, _object["bbox"][1] + position),
-                                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, (color, color1, 50), 1, cv2.LINE_AA)
+                    if self.args.use_emotion_prediction:
+                        for i in range(0, len(self.emotion_labels)):
+                            cv2.putText(fr, self.emotion_labels[i], (_object["bbox"][2]+5, _object["bbox"][1] + position),
+                                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, (color, color1, 50), 1, cv2.LINE_AA)
 
-                        cv2.rectangle(fr, (_object["bbox"][2]+5, _object["bbox"][1]+position+5),
-                                      (_object["bbox"][2]+5 + (int)(50*_object["prob_emotions"][0][i]), _object["bbox"][1]+position+10),
-                                      (color, color1, 50), -1)
-                        # cv2.rectangle(fr, (_object["bbox"][2]+5, _object["bbox"][1]+position+5),
-                        #               (_object["bbox"][2]+5 + (int)(50*_object["prob_emotions"][i]), _object["bbox"][1]+position+10),
-                        #               (color, color1, 50), -1)
-                        position += 30
-                        color += 10
-                        color1 += 50
-                    # for i in range(0, len(self.emotion_labels)):
-                    #     print(self.emotion_labels[i],_object["prob_emotions"][0][i])
+                            cv2.rectangle(fr, (_object["bbox"][2]+5, _object["bbox"][1]+position+5),
+                                          (_object["bbox"][2]+5 + (int)(50*_object["prob_emotions"][0][i]), _object["bbox"][1]+position+10),
+                                          (color, color1, 50), -1)
+
+                            position += 30
+                            color += 10
+                            color1 += 50
+
                 else:
                     cv2.putText(fr, str(_object["name"][0]), (_object["bbox"][0], _object["bbox"][1]),
                                 cv2.FONT_HERSHEY_SIMPLEX, .5, (177, 18, 38), 2, cv2.LINE_AA)
@@ -223,12 +213,13 @@ class Synthetic:
                     break
             else:
                 output.write(fr)
+
         cap.release()
         output.release()
 
         name, ext = os.path.splitext(self.args.output_video)
         new_name = name + "_audio" + ext
-        print ("save :", new_name)
-        cmd = "ffmpeg -y -i {} -i {} -shortest {}".format(self.args.output_video,
-                                                          "videos/audio.mp3", new_name)
+        print("save :", new_name)
+        cmd = "ffmpeg -y -i {} -i {} -shortest {}".format("video.mp4",
+                                                          "audio.mp3", self.args.output_video)
         os.system(cmd)
