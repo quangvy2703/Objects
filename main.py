@@ -16,7 +16,8 @@ parser.add_argument('--face_detection_model', default='models/retinaface-R50/R50
 # parser.add_argument('--face_detection_model_path', default='../models/mnet.25/mnet.25', type=str)
 
 # Age, emotion, gender
-parser.add_argument('--use_ga_prediction', type=bool, default=False, help="Using age, emotion prediction?")
+parser.add_argument('--use_gender_prediction', type=bool, default=False, help="Using gender prediction?")
+parser.add_argument('--use_age_prediction', type=bool, default=False, help="Using age prediction?")
 parser.add_argument('--ga_model', default='models/gamodel-r50/model, 0',
                     help='Path to gender age prediction model')
 parser.add_argument('--use_emotion_prediction', type=bool, default=False,
@@ -33,12 +34,10 @@ parser.add_argument('--face_feature_model', type=str, default='models/model-r100
 
 # Object Detection
 parser.add_argument('--use_objects_detection', type=bool, default=False, help="Using object detection?")
-parser.add_argument('--object_detection_model',
-                    default='models/resnet50_coco_best_v2.1.0.h5',
+parser.add_argument('--object_detection_model', default='models/resnet50_coco_best_v2.1.0.h5',
                     help='Path to objects detection model')
 
 # Face recognition
-
 parser.add_argument('--batch_size', type=int, default=32, help="Batch size")
 parser.add_argument('--epochs', type=int, default=300, help="Epochs")
 # parser.add_argument('--emb_size', type=int, default=512, help="Embedding size")

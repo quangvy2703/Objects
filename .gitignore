@@ -1,6 +1,8 @@
 face/models
 face/videos
 *.mp4
+*.mp3
+*.png
 *.avi
 motion/models
 models

@@ -1,6 +1,3 @@
-
-import os
-import sys
 import cv2
 import mxnet as mx
 import numpy as np
@@ -18,6 +15,10 @@ class GEA:
         sess = tf.compat.v1.Session(config=_config)
         K.set_session(sess)
 
+        # gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
+        # sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
+        # K.set_session(sess)
+
         self.args = args
         self.ctx = mx.gpu(args.gpuid)
 
@@ -29,7 +30,6 @@ class GEA:
         # Emotion
         self.emotion_model = None
         self.emotion_labels = None
-        emotion_offsets = (20, 40)
         self.emotion_target_size = None
         pass
 
@@ -51,7 +51,6 @@ class GEA:
     def build_emotion_model(self):
         self.emotion_model = load_model(self.args.emotion_model)
         self.emotion_target_size = self.emotion_model.input_shape[1:3]
-        # self.emotion_target_size = (64,64)
         self.emotion_labels = get_labels('fer2013')
 
     def get_ga(self, img):

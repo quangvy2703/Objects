@@ -12,8 +12,9 @@ from face_features import FaceFeature
 import torch
 from torch.autograd import Variable
 
-
 prexfix_path = "/media/vy/DATA/projects/face/project3/Objects"
+COLOR = (37, 117, 17)
+
 class Synthetic:
     def __init__(self, args):
         self.args = args
@@ -37,7 +38,7 @@ class Synthetic:
             self.face_detection.build_net()
             self.face_align = FaceAlign(args)
 
-        if args.use_ga_prediction or args.use_emotion_prediction:
+        if args.use_gender_prediction or args.use_emotion_prediction or args.use_age_prediction:
             self.gea = GEA(args)
             self.gea.build_ga_model()
             self.gea.build_emotion_model()
@@ -87,7 +88,7 @@ class Synthetic:
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1200)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 640)
 
-        count = 0
+        count = 1
         num_scene = 0
         if n_frames is not 0:
             bar = progressbar.ProgressBar(maxval=n_frames).start()
@@ -98,102 +99,130 @@ class Synthetic:
             if fr is None:
                 break
 
-            fr_copy = fr.copy()
+            fr_draw = fr.copy()
 
             if self.args.use_face_detection:
                 # fr = cv2.GaussianBlur(fr, (5, 5), cv2.BORDER_DEFAULT)
                 detected_face_bboxes, cropped_faces, landmarks = self.face_detection.detection(fr)
-                if self.args.use_ga_prediction:
-                    for idx, _ in enumerate(cropped_faces):
-                        face = self.face_align.align(fr, detected_face_bboxes[idx], landmarks[idx])
-                        # cv2.imwrite("align.png", face)
-                        if face is None:
-                            continue
 
-                        _outputs = [[0, 0]]
-                        if self.args.use_face_recognition:
-                            emb = self.face_features.run(face)
-                            emb = emb.reshape(1, 512)
-                            emb_v = Variable(torch.from_numpy(emb))
-                            pred, _outputs = self.face_recognition.run(self.face_recognition_net, emb_v)
+                for idx, _ in enumerate(cropped_faces):
+                    box = detected_face_bboxes[idx]
+                    y_pos = 0
+                    face = self.face_align.align(fr, box, landmarks[idx])
+                    face_clone = face.copy()
+                    # cv2.imwrite("align.png", face)
+                    if face is None:
+                        continue
 
-                        # The collision in data between get_ga and get emotion, emotion must be executed first
+                    # Draw face box
+                    cv2.rectangle(fr_draw, (box[0], box[1]),(box[2], box[3]), (255, 195, 0), 2)
 
-                        emotion = ["None", "None"]
-                        prob_emotions = [1, 1, 1, 1]
+                    if self.args.use_emotion_prediction:
+                        emotion, prob_emotions = self.gea.get_emotion(face)
+                        emotion = emotion[0]
 
-                        if self.args.use_emotion_prediction:
-                            emotion, prob_emotions = self.gea.get_emotion(face)
+                        position = 10
+                        color = 50
+                        color1 = 0
+                        space = box[3] - box[1]
+                        font = space / (15 * 30)
+                        # print(font)
+                        text_size = cv2.getTextSize("text", cv2.FONT_HERSHEY_SIMPLEX, font, 1)[0][1]
 
+                        for i in range(0, len(self.emotion_labels)):
+                            cv2.putText(fr_draw, self.emotion_labels[i],
+                                        (box[2] + 5, box[1] + position),
+                                        cv2.FONT_HERSHEY_SIMPLEX, font, (color, color1, 50), 1, cv2.LINE_AA)
+                            cv2.rectangle(fr_draw, (box[2] + 5, box[1] + position + text_size),
+                                          (box[2] + 5 + (int)(50 * prob_emotions[0][i]),
+                                           box[1] + position + text_size + 5),
+                                          (color, color1, 50), -1)
+
+                            position = position + text_size + int(font * 40)
+                            color += 10
+                            color1 += 50
+
+
+                        # color = 50
+                        # color1 = 0
+                        # h_box = box[3] - box[1]
+                        # cell = round(h_box / 7)
+                        # cell = int(cell)
+                        # position = 0
+                        # for i in range(0, len(self.emotion_labels)):
+                        #     cv2.rectangle(fr_draw, (box[2] + 5, box[1] + position + 5),
+                        #                   (box[2] + 5 + (int)(50 * prob_emotions[0][i]), box[1] + position),
+                        #                   (90, 207, 189), -1)
+                        #     cv2.putText(fr_draw, self.emotion_labels[i], (box[2] + 5, box[1] + position),
+                        #                 cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1, cv2.LINE_AA)
+                        #
+                        #
+                        #     position += cell
+                        #     color += 10
+                        #     color1 += 50
+
+                    if self.args.use_gender_prediction or self.args.use_age_prediction:
                         face = np.transpose(face, (2, 0, 1))
                         gender, age = self.gea.get_ga(face)
 
                         gender = "Male" if gender == 1 else "Female"
-                        emotion = emotion[0]
-                        if float(max(_outputs[0])) * 100 > 95:
-                            object = {"bbox": detected_face_bboxes[idx], "name": [gender, age, emotion,
-                                                                                  pred + "--" + str(round(
-                                                                                      float(max(_outputs[0])) * 100,
-                                                                                      2))],
-                                      "prob_emotions":prob_emotions}
+
+
+                        # Draw gender
+                        if self.args.use_gender_prediction:
+                            cv2.putText(fr_draw, gender, (box[0], box[1] - y_pos * 20),
+                                        cv2.FONT_HERSHEY_SIMPLEX, .5, COLOR, 1, cv2.LINE_AA)
+                            y_pos += 1
+
+                        # Draw age
+                        if self.args.use_age_prediction:
+                            cv2.putText(fr_draw, "Age " + str(age), (box[0], box[1] - y_pos * 20),
+                                        cv2.FONT_HERSHEY_SIMPLEX, .5, COLOR, 1, cv2.LINE_AA)
+                            y_pos += 1
+
+                    if self.args.use_face_recognition:
+                        emb = self.face_features.run(face_clone)
+                        emb = emb.reshape(1, 512)
+                        emb_v = Variable(torch.from_numpy(emb))
+                        pred, _outputs = self.face_recognition.run(self.face_recognition_net, emb_v)
+
+                        # Draw ID
+                        if float(max(_outputs[0])) * 100 > 90:
+                            probability = str(round(float(max(_outputs[0])) * 100, 2))
+                            cv2.putText(fr_draw, "ID -- " + pred + ' -- ' + str(probability),
+                                        (box[0], box[1] - y_pos*20),
+                                        cv2.FONT_HERSHEY_SIMPLEX, .5, COLOR, 1, cv2.LINE_AA)
                         else:
-                            object = {"bbox": detected_face_bboxes[idx], "name": [gender, age, emotion, "Unkown"],
-                                      "prob_emotions": prob_emotions}
-                        detections.append(object)
-                else:
-                    for idx, face in enumerate(detected_face_bboxes):
-                        object = {"bbox": detected_face_bboxes[idx], "name": ["Face"]}
-                        detections.append(object)
+                            cv2.putText(fr_draw, "ID -- Unknown", (box[0], box[1] - y_pos*20),
+                                        cv2.FONT_HERSHEY_SIMPLEX, .5, COLOR, 1, cv2.LINE_AA)
+                            y_pos += 1
+
+                        # The collision in data between get_ga and get emotion, emotion must be executed first
 
             if self.args.use_objects_detection:
-                # print(os.getcwd())
-                # cv2.imwrite("src/deploy/image.png", fr)
-                boxes, scores, labels = self.objects_detection.run(fr_copy)
+                y_pos = 0
+                boxes, scores, labels = self.objects_detection.run(fr)
                 for box, score, label in zip(boxes[0], scores[0], labels[0]):
+                    box = box.astype(int)
+
                     # scores are sorted so we can break
                     if score < 0.5:
                         break
-                    object = {"bbox": box, "name": [self.objects_detection.labels_to_names[label]]}
-                    detections.append(object)
-
-            for _object in detections:
-                cv2.rectangle(fr, (_object["bbox"][0], _object["bbox"][1]), (_object["bbox"][2], _object["bbox"][3]),
-                              (255, 195, 0), 2)
-                if len(_object["name"]) == 4:
-                    cv2.putText(fr, "ID " + str(_object["name"][3]),
-                                (_object["bbox"][0], _object["bbox"][1] - 20),
-                                cv2.FONT_HERSHEY_SIMPLEX, .5, (177, 18, 38), 2, cv2.LINE_AA)
-                    cv2.putText(fr, str(_object["name"][1])+", "+str(_object["name"][0]),
-                                (_object["bbox"][0], _object["bbox"][1]),
-                                cv2.FONT_HERSHEY_SIMPLEX, .5, (177, 18, 38), 2, cv2.LINE_AA)
-
-                    position = 0
-                    color = 50
-                    color1 = 0
-                    if self.args.use_emotion_prediction:
-                        for i in range(0, len(self.emotion_labels)):
-                            cv2.putText(fr, self.emotion_labels[i], (_object["bbox"][2]+5, _object["bbox"][1] + position),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, (color, color1, 50), 1, cv2.LINE_AA)
-
-                            cv2.rectangle(fr, (_object["bbox"][2]+5, _object["bbox"][1]+position+5),
-                                          (_object["bbox"][2]+5 + (int)(50*_object["prob_emotions"][0][i]), _object["bbox"][1]+position+10),
-                                          (color, color1, 50), -1)
-
-                            position += 30
-                            color += 10
-                            color1 += 50
-
-                else:
-                    cv2.putText(fr, str(_object["name"][0]), (_object["bbox"][0], _object["bbox"][1]),
+                    # print(box)
+                    # print((box[0], box[1]), (box[2], box[3]))
+                    cv2.rectangle(fr_draw, (box[0], box[1]), (box[2], box[3]), (255, 195, 0), 2)
+                    name = self.objects_detection.labels_to_names[label]
+                    cv2.putText(fr_draw, name, (box[0], box[1] - y_pos * 20),
                                 cv2.FONT_HERSHEY_SIMPLEX, .5, (177, 18, 38), 2, cv2.LINE_AA)
 
             if self.args.use_scenes_change_count:
                 if count < scenes[num_scene][1]:
                     C = num_scene
                 else:
-                    num_scene += 1
+                    if num_scene < len(scenes) - 1:
+                        num_scene += 1
                 cv2.putText(
-                    img=fr,
+                    img=fr_draw,
                     text="Scene : " + str(C),
                     org=(30, 30),
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX,
@@ -208,11 +237,11 @@ class Synthetic:
             #     break
 
             if self.showcam:
-                cv2.imshow("Frame", fr)
+                cv2.imshow("Frame", fr_draw)
                 if cv2.waitKey(32) & 0xFF == ord('q'):
                     break
             else:
-                output.write(fr)
+                output.write(fr_draw)
 
         cap.release()
         output.release()
