@@ -13,7 +13,7 @@ import torch
 from torch.autograd import Variable
 
 prexfix_path = "/media/vy/DATA/projects/face/project3/Objects"
-COLOR = (37, 117, 17)
+COLOR = (3, 252, 98)
 
 class Synthetic:
     def __init__(self, args):
@@ -90,14 +90,21 @@ class Synthetic:
 
         count = 1
         num_scene = 0
+        cur_status = 0
+        _write = True
         if n_frames is not 0:
             bar = progressbar.ProgressBar(maxval=n_frames).start()
         while True:
-            # print("Frame ", count)
-            detections = []
             ret, fr = cap.read()
             if fr is None:
                 break
+
+            if int(100 * count / n_frames) > cur_status:
+                file = open("/var/www/html/convertvideo/demo/static/uploads/progress/status.txt", "w")
+                _write = True
+                cur_status = int(100 * count / n_frames)
+            else:
+                _write = False
 
             fr_draw = fr.copy()
 
@@ -122,8 +129,8 @@ class Synthetic:
                         emotion = emotion[0]
 
                         position = 10
-                        color = 50
-                        color1 = 0
+                        color = 250
+                        color1 = 150
                         space = box[3] - box[1]
                         font = space / (15 * 30)
                         # print(font)
@@ -142,31 +149,11 @@ class Synthetic:
                             color += 10
                             color1 += 50
 
-
-                        # color = 50
-                        # color1 = 0
-                        # h_box = box[3] - box[1]
-                        # cell = round(h_box / 7)
-                        # cell = int(cell)
-                        # position = 0
-                        # for i in range(0, len(self.emotion_labels)):
-                        #     cv2.rectangle(fr_draw, (box[2] + 5, box[1] + position + 5),
-                        #                   (box[2] + 5 + (int)(50 * prob_emotions[0][i]), box[1] + position),
-                        #                   (90, 207, 189), -1)
-                        #     cv2.putText(fr_draw, self.emotion_labels[i], (box[2] + 5, box[1] + position),
-                        #                 cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1, cv2.LINE_AA)
-                        #
-                        #
-                        #     position += cell
-                        #     color += 10
-                        #     color1 += 50
-
                     if self.args.use_gender_prediction or self.args.use_age_prediction:
                         face = np.transpose(face, (2, 0, 1))
                         gender, age = self.gea.get_ga(face)
 
                         gender = "Male" if gender == 1 else "Female"
-
 
                         # Draw gender
                         if self.args.use_gender_prediction:
@@ -213,7 +200,7 @@ class Synthetic:
                     cv2.rectangle(fr_draw, (box[0], box[1]), (box[2], box[3]), (255, 195, 0), 2)
                     name = self.objects_detection.labels_to_names[label]
                     cv2.putText(fr_draw, name, (box[0], box[1] - y_pos * 20),
-                                cv2.FONT_HERSHEY_SIMPLEX, .5, (177, 18, 38), 2, cv2.LINE_AA)
+                                cv2.FONT_HERSHEY_SIMPLEX, .5, COLOR, 2, cv2.LINE_AA)
 
             if self.args.use_scenes_change_count:
                 if count < scenes[num_scene][1]:
@@ -230,6 +217,10 @@ class Synthetic:
                     color=(255, 0, 255))
                 # output.write(fr)
             count += 1
+
+            if _write is True and cur_status is not "":
+                file.write(str(cur_status + 1))
+                file.close()
 
             if n_frames is not 0:
                 bar.update(count)

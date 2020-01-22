@@ -73,3 +73,22 @@ Note. 	* In current, we use a GPU with 11GB memory. So, please select tasks with
 	* The process done when the processed video appear in the demo page. We will develop progress bar running time
 	later.
 	
+* [Importance] Training for new person in Face Recognition.
+	* Copy your datasets into datasets dir with following structure
+		datasets
+		|--	train
+		|---|--	person 1 dir
+		|---|---|--	person1_image1.png
+		|---|---|--			...	
+		|---|---|--	person1_image20.png
+		|---|--	person 2 dir
+		|---|---|--	person2_image1.png
+		|---|---|--			...	
+		|---|---|--	person2_image20.png
+	* Face recognition requires face detection, so, make sure that you get the use_face_detection paramters in main.py file. 
+	* Refering to the src/deploy/_face_recogniton.py line 19, change the catergories dictionany (according your datasets) with template categories={"Name": ID}.
+	* Refering to the src/deploy/synthetic.py line 63. Prepare faces, after this step, faces from training image are cropped and saved in datasets/aligned/. By manually, you must check and delete if cropped face is wrong (in the case that the original image contain another people), or the cropped face is too unclear. 
+	* Changing the parameter n_classes in the main.py according to the number of peoples you want to train.
+	* Refering to the src/deploy/synthetic.py line 64, 65. Train face recognition model with your datasets.
+	* Trained model will be saved at checkpoints/.
+

@@ -15,7 +15,7 @@ import cv2
 import torch
 from torch.autograd import Variable
 import tqdm
-#
+
 categories = {'Ha-Lan': 0, 'Ngan': 1, 'Dung': 2, 'Tra-Long': 3}
 hidden_dim = 2048
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -34,10 +34,10 @@ class FacialDataLoader(DataLoader):
         return len(self.data_x)
 
     def load_data(self):
-        characters = os.listdir(self.args.train_dir + "/features")
+        characters = os.listdir(self.args.train_dir + "/../features")
         for character in characters:
             print("Loading data ", character.rsplit('.', 2), categories[character.rsplit('.', 2)[0]])
-            features = np.load(os.path.join(self.args.train_dir, "features", character))
+            features = np.load(os.path.join(self.args.train_dir, "..", "features", character))
             self.data_x = np.concatenate((self.data_x, features))
             if self.data_y is None:
                 self.data_y = np.array([categories[character.rsplit('.', 2)[0]]] * len(features))
@@ -83,14 +83,14 @@ class FaceRecognition:
         train_images = os.listdir(self.args.train_dir)
         # test_images = os.listdir(args.test_dir)
 
-        if not os.path.exists(os.path.join(self.args.train_dir,  "aligned")):
-            os.makedirs(os.path.join(self.args.train_dir, "aligned"))
+        if not os.path.exists(os.path.join(self.args.train_dir, "..", "aligned")):
+            os.makedirs(os.path.join(self.args.train_dir, "..", "aligned"))
 
         for person in train_images:
             person_imgs = os.listdir(os.path.join(self.args.train_dir, person))
 
-            if not os.path.exists(os.path.join(self.args.train_dir, "aligned", person)):
-                os.makedirs(os.path.join(self.args.train_dir, "aligned", person))
+            if not os.path.exists(os.path.join(self.args.train_dir, "..", "aligned", person)):
+                os.makedirs(os.path.join(self.args.train_dir, "..", "aligned", person))
 
             for train_image in person_imgs:
                 img_path = os.path.join(self.args.train_dir, person, train_image)
@@ -99,7 +99,7 @@ class FaceRecognition:
                 detected_face_bboxes, cropped_faces, landmarks = detection.detection(img)
 
                 for idx, cropped_face in enumerate(cropped_faces):
-                    aligned_path = os.path.join(self.args.train_dir, "aligned", person, str(idx) + "_" + train_image)
+                    aligned_path = os.path.join(self.args.train_dir, "..", "aligned", person, str(idx) + "_" + train_image)
                     print(aligned_path)
                     face = align.align(img, detected_face_bboxes[idx], landmarks[idx])
 
@@ -130,7 +130,7 @@ class FaceRecognition:
             )
         ])
 
-        images_dir = os.path.join(self.args.train_dir, "aligned")
+        images_dir = os.path.join(self.args.train_dir, "..", "aligned")
         characeters = os.listdir(images_dir)
         print("Augumenting data...")
         for character in characeters:
@@ -146,9 +146,9 @@ class FaceRecognition:
                     embed = features_extraction.run(img_aug)
                     features.append(embed)
 
-            save_path = os.path.join(self.args.train_dir, "features", character + ".npy")
-            if not os.path.exists(os.path.join(self.args.train_dir, "features")):
-                os.mkdir(os.path.join(self.args.train_dir, "features"))
+            save_path = os.path.join(self.args.train_dir, "..", "features", character + ".npy")
+            if not os.path.exists(os.path.join(self.args.train_dir, "..", "features")):
+                os.mkdir(os.path.join(self.args.train_dir, "..", "features"))
             features = np.asarray(features).reshape((len(features), self.args.emb_size))
             print(character, features.shape)
             np.save(save_path, features)
