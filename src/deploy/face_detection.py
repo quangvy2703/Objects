@@ -1,8 +1,15 @@
 # Get faces in images in a given image folder
 # Return file name and faces in images
 
+import os
+#os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+#os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # use id from $ nvidia-smi
 import numpy as np
 from retinaface import RetinaFace
+#import os
+#os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID" 
+#os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # use id from $ nvidia-smi
+
 
 class FaceDetection:
     def __init__(self, args):

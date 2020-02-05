@@ -2,6 +2,9 @@ import numpy as np
 import mxnet as mx
 from sklearn import preprocessing
 from easydict import EasyDict as edict
+import os
+#os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID" 
+#os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # use id from $ nvidia-smi
 
 # Get features of given faces in given images
 class FaceFeature:

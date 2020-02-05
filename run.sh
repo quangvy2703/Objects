@@ -1,12 +1,18 @@
-python main.py   --input_video videos/video_ob.mp4 \
+python /home/quangvy2703/Objects/main.py   --input_video videos/videos.mp4 \
                  --output_video videos/results/video_ob.mp4 \
                  --train_dir datasets/train \
                  --test_dir datasets/test  \
-                 --use_face_detection True \
-                 --use_face_recognition True \
-                 --emb_size 512 \
+		 --use_face_detection True \
+		 --use_gender_prediction True \
+		 --use_emotion_prediction True \
+		 --use_face_recognition True \
+		 --use_scenes_change_count True \
+		 --use_age_prediction True \
+		 --use_objects_detection True \
+		 --emb_size 512 \
                  --n_classes 4 \
-                 --train   \
+		 --gpuid 1 \
+#                 --train   \
 #                 --use_objects_detection True \
 #                 --use_gender_prediction True  \
 #                 --use_age_prediction True  \

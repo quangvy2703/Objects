@@ -1,10 +1,12 @@
 import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), 'src', 'deploy'))
 import cv2
 import numpy as np
 import progressbar
-from objects_detection import ObjectsDetection 
 from face_detection import FaceDetection
 from face_align import FaceAlign
+from objects_detection import ObjectsDetection
 from scenes_change import ScenesChange
 from _face_recognition import FaceRecognition, Net
 from gea import GEA
@@ -14,6 +16,8 @@ from torch.autograd import Variable
 
 prexfix_path = "/home/quangvy2703/Objects"
 COLOR = (3, 252, 98)
+import time
+time.sleep(50)
 
 class Synthetic:
     def __init__(self, args):
@@ -219,7 +223,7 @@ class Synthetic:
             count += 1
 
             if _write is True and cur_status is not "":
-                file.write(str(cur_status))
+                file.write(str(cur_status + 1))
                 file.close()
 
             if n_frames is not 0:
@@ -243,6 +247,3 @@ class Synthetic:
         cmd = "ffmpeg -y -i {} -i {} -shortest {}".format("video.mp4",
                                                           "audio.mp3", self.args.output_video)
         os.system(cmd)
-        file = open("/home/quangvy2703/Objects-server/static/uploads/progress/status.txt", "w") 
-        file.write("100")
-        file.close()

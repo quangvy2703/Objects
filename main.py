@@ -43,7 +43,7 @@ parser.add_argument('--epochs', type=int, default=300, help="Epochs")
 # parser.add_argument('--emb_size', type=int, default=512, help="Embedding size")
 parser.add_argument('--train_dir', type=str, default="datasets/train/features")
 parser.add_argument('--test_dir', type=str, default="datasets/val/features")
-parser.add_argument('--n_classes', type=int, default=3, help="Number of peoples")
+parser.add_argument('--n_classes', type=int, default=4, help="Number of peoples")
 parser.add_argument('--train', action='store_true')
 
 # Scenes change
@@ -54,7 +54,7 @@ parser.add_argument('--input_video', type=str, default="", required=True, help="
 parser.add_argument('--output_video', type=str, default="", required=True, help="Output video name")
 
 # GPU
-parser.add_argument('--gpuid', type=int, default=0, help="GPU ID")
+parser.add_argument('--gpuid', type=int, default=1, help="GPU ID")
 
 
 def main(args):

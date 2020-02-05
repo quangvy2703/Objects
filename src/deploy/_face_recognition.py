@@ -16,6 +16,9 @@ import torch
 from torch.autograd import Variable
 import tqdm
 
+#os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID" 
+#os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # use id from $ nvidia-smi
+
 categories = {'Ha-Lan': 0, 'Ngan': 1, 'Dung': 2, 'Tra-Long': 3}
 hidden_dim = 2048
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

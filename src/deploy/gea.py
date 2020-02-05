@@ -6,6 +6,9 @@ from utils.datasets import get_labels
 from utils.preprocessor import preprocess_input
 import tensorflow as tf
 import tensorflow.python.keras.backend as K
+import os
+#os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID" 
+#os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # use id from $ nvidia-smi
 
 class GEA:
     def __init__(self, args):
