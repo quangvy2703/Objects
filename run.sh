@@ -1,4 +1,4 @@
-python /home/quangvy2703/Objects/main.py   --input_video videos/videos.mp4 \
+python main.py   --input_video videos/videos.mp4 \
                  --output_video videos/results/video_ob.mp4 \
                  --train_dir datasets/train \
                  --test_dir datasets/test  \
@@ -11,7 +11,7 @@ python /home/quangvy2703/Objects/main.py   --input_video videos/videos.mp4 \
 		 --use_objects_detection True \
 		 --emb_size 512 \
                  --n_classes 4 \
-		 --gpuid 1 \
+		 --gpuid 0 \
 #                 --train   \
 #                 --use_objects_detection True \
 #                 --use_gender_prediction True  \
