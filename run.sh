@@ -8,8 +8,8 @@ python main.py   --input_video videos/videos.mp4 \
 		 --use_scenes_change_count True \
 		 --use_age_prediction True \
 		 --emb_size 512 \
-		 --n_classes 4 \
+                 --n_classes 4 \
 		 --gpuid 0 \
-		 --use_emotion_prediction True \
+#                 --train   \
 #                 --use_objects_detection True \
 
