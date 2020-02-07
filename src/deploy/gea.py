@@ -8,7 +8,7 @@ import tensorflow as tf
 import tensorflow.python.keras.backend as K
 import os
 #os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID" 
-#os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # use id from $ nvidia-smi
+#os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # use id from $ nvidia-smi
 
 class GEA:
     def __init__(self, args):
@@ -18,12 +18,28 @@ class GEA:
         sess = tf.compat.v1.Session(config=_config)
         K.set_session(sess)
 
+#        num_cores = 8
+#        GPU = False
+#        CPU = True
+#        if GPU:
+#            num_GPU = 1
+#            num_CPU = 1
+#        if CPU:
+#            num_CPU = 1
+#            num_GPU = 0
+
+#        config = tf.ConfigProto(intra_op_parallelism_threads=num_cores, \
+#                                inter_op_parallelism_threads=num_cores, allow_soft_placement=True, \
+#                                device_count={'CPU': num_CPU, 'GPU': num_GPU})
+#        session = tf.Session(config=config)
+#        K.set_session(session)
         # gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
         # sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
         # K.set_session(sess)
 
         self.args = args
         self.ctx = mx.gpu(args.gpuid)
+#        self.ctx = mx.cpu()
 
         # Age Gender
         self.image_size = (112, 112)
@@ -52,9 +68,10 @@ class GEA:
         self.ga_model = model
 
     def build_emotion_model(self):
-        self.emotion_model = load_model(self.args.emotion_model)
-        self.emotion_target_size = self.emotion_model.input_shape[1:3]
-        self.emotion_labels = get_labels('fer2013')
+        with tf.device('/cpu:0'):
+            self.emotion_model = load_model(self.args.emotion_model)
+            self.emotion_target_size = self.emotion_model.input_shape[1:3]
+            self.emotion_labels = get_labels('fer2013')
 
     def get_ga(self, img):
         input_blob = np.expand_dims(img, axis=0)
@@ -72,16 +89,17 @@ class GEA:
 
     # {0:'angry',1:'disgust',2:'fear',3:'happy',4:'sad',5:'surprise',6:'neutral'}
     def get_emotion(self, img):
-        emotion_text = []
-        emotion_probability = []
-        gray_face = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        gray_face = cv2.resize(gray_face, self.emotion_target_size)
-        gray_face = preprocess_input(gray_face, True)
-        gray_face = np.expand_dims(gray_face, 0)
-        gray_face = np.expand_dims(gray_face, -1)
-        emotion_prediction = self.emotion_model.predict(gray_face)
-        emotion_probability.append(np.max(emotion_prediction))
-        emotion_label_arg = np.argmax(emotion_prediction)
-        emotion_text.append(self.emotion_labels[emotion_label_arg])
+        with tf.device('/cpu:0'):
+            emotion_text = []
+            emotion_probability = []
+            gray_face = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            gray_face = cv2.resize(gray_face, self.emotion_target_size)
+            gray_face = preprocess_input(gray_face, True)
+            gray_face = np.expand_dims(gray_face, 0)
+            gray_face = np.expand_dims(gray_face, -1)
+            emotion_prediction = self.emotion_model.predict(gray_face)
+            emotion_probability.append(np.max(emotion_prediction))
+            emotion_label_arg = np.argmax(emotion_prediction)
+            emotion_text.append(self.emotion_labels[emotion_label_arg])
 
-        return emotion_text, emotion_prediction
+            return emotion_text, emotion_prediction

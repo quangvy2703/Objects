@@ -1,6 +1,6 @@
 import os
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0, 1"  # use id from $ nvidia-smi
+#os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+#os.environ["CUDA_VISIBLE_DEVICES"] = "0, 1"  # use id from $ nvidia-smi
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'keras-retinanet'))
@@ -19,8 +19,8 @@ from PIL import Image
 
 #os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID" 
 #os.environ["CUDA_VISIBLE_DEVICES"] = "1"  # use id from $ nvidia-smi
-
-prexfix_path = "/home/quangvy2703/Objects"
+cwd = os.getcwd()
+prexfix_path = cwd
 labels_to_names = {0: 'person', 1: 'bicycle', 2: 'car', 3: 'motorcycle', 4: 'airplane', 5: 'bus', 6: 'train',
                    7: 'truck', 8: 'boat', 9: 'traffic light', 10: 'fire hydrant', 11: 'stop sign', 12: 'parking meter',
                    13: 'bench', 14: 'bird', 15: 'cat', 16: 'dog', 17: 'horse', 18: 'sheep', 19: 'cow', 20: 'elephant',
@@ -43,7 +43,7 @@ class ObjectsDetection:
         self.args = args
         self.model = None
         self.labels_to_names = labels_to_names
-#        setup_gpu(0)
+        setup_gpu(0)
 
 
     def build_net(self):
@@ -64,7 +64,7 @@ class ObjectsDetection:
         # process image
         start = time.time()
         boxes, scores, labels = self.model.predict_on_batch(np.expand_dims(image, axis=0))
-        print("processing time: ", time.time() - start)
+        #print("processing time: ", time.time() - start)
 
         # correct for image scale
         boxes /= scale

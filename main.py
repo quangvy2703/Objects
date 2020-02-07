@@ -54,7 +54,7 @@ parser.add_argument('--input_video', type=str, default="", required=True, help="
 parser.add_argument('--output_video', type=str, default="", required=True, help="Output video name")
 
 # GPU
-parser.add_argument('--gpuid', type=int, default=1, help="GPU ID")
+parser.add_argument('--gpuid', type=int, default=0, help="GPU ID")
 
 
 def main(args):
@@ -68,5 +68,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print(args)
     main(args)
+
 
 

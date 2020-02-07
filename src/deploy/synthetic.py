@@ -12,7 +12,9 @@ from face_features import FaceFeature
 import torch
 from torch.autograd import Variable
 
-prexfix_path = "/home/quangvy2703/Objects"
+cwd = os.getcwd()
+prexfix_path = cwd
+server_path = cwd + "/../Objects-server/"
 COLOR = (3, 252, 98)
 
 class Synthetic:
@@ -100,7 +102,7 @@ class Synthetic:
                 break
 
             if int(100 * count / n_frames) > cur_status:
-                file = open("/home/quangvy2703/Objects-server/static/uploads/progress/status.txt", "w")
+                file = open(server_path + "static/uploads/progress/status.txt", "w")
                 _write = True
                 cur_status = int(100 * count / n_frames)
             else:
@@ -243,6 +245,11 @@ class Synthetic:
         cmd = "ffmpeg -y -i {} -i {} -shortest {}".format("video.mp4",
                                                           "audio.mp3", self.args.output_video)
         os.system(cmd)
-        file = open("/home/quangvy2703/Objects-server/static/uploads/progress/status.txt", "w") 
+        file_return = open(server_path + "static/uploads/progress/return.txt", "w")
+        return_str = {"data":{"originalVideo":{"path":self.args.input_video,"title":"47AWH5.mp4"},"processVideo":{"path":self.args.output_video,"title":"47AWH5.mp4"}}}
+        file_return.write(str(return_str))
+        file_return.close()
+
+        file = open(server_path + "static/uploads/progress/status.txt", "w") 
         file.write("100")
         file.close()
